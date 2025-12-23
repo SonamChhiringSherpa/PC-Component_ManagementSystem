@@ -139,7 +139,7 @@ public class UserView extends javax.swing.JFrame {
         );
 
         SmartPanel.setBackground(new java.awt.Color(255, 255, 255));
-        SmartPanel.setBorder(javax.swing.BorderFactory.createLineBorder(null));
+        SmartPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         SmartPanel.setLayout(new java.awt.CardLayout());
 
         javax.swing.GroupLayout HomePanelLayout = new javax.swing.GroupLayout(HomePanel);
@@ -168,7 +168,7 @@ public class UserView extends javax.swing.JFrame {
 
         SmartPanel.add(AboutUsPanel, "card3");
 
-        FilterPanel.setBorder(javax.swing.BorderFactory.createLineBorder(null));
+        FilterPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel2.setText("Filters:");
 
@@ -232,17 +232,17 @@ public class UserView extends javax.swing.JFrame {
                 .addContainerGap(10, Short.MAX_VALUE))
         );
 
-        ItemPanel.setBorder(javax.swing.BorderFactory.createLineBorder(null));
+        ItemPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Name", "Component Type", "Status", "Price", "Image"
+                "Name", "Component Type", "Status", "Quantity", "Price", "Image"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -354,11 +354,11 @@ public class UserView extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new UserView().setVisible(true));
     }
     private void initDummyData() {
-    components.add(new PCComponent("Ryzen 5 5600X", "CPU", "Available", 250.0, "images/cpu1.png"));
-    components.add(new PCComponent("RTX 3060", "GPU", "Available", 400.0, "images/gpu1.png"));
-    components.add(new PCComponent("B550M", "Motherboard", "Out of Stock", 150.0, "images/mb1.png"));
-    components.add(new PCComponent("16GB DDR4", "RAM", "Available", 70.0, "images/ram1.png"));
-    components.add(new PCComponent("650W PSU", "PSU", "Available", 90.0, "images/psu1.png"));
+    components.add(new PCComponent("Ryzen 5 5600X", "CPU", "Available",2 ,250.0, "images/cpu1.png"));
+    components.add(new PCComponent("RTX 3060", "GPU", "Available",3, 400.0, "images/gpu1.png"));
+    components.add(new PCComponent("B550M", "Motherboard", "Out of Stock",4, 150.0, "images/mb1.png"));
+    components.add(new PCComponent("16GB DDR4", "RAM", "Available",7, 70.0, "images/ram1.png"));
+    components.add(new PCComponent("650W PSU", "PSU", "Available",10, 90.0, "images/psu1.png"));
 }
     DefaultTableModel model;
     
@@ -371,7 +371,9 @@ public class UserView extends javax.swing.JFrame {
             c.getName(),
             c.getType(),
             c.getStatus(),
-            c.getPrice()
+            c.getQuantity(),
+            c.getPrice(),
+            c.getImagePath()
         };
         model.addRow(row);
     }

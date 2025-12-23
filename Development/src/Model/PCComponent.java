@@ -12,13 +12,15 @@ public class PCComponent {
     private String name;
     private String type;
     private String status;
+    private int quantity;
     private double price;
     private String imagePath;   // path to image file
 
-    public PCComponent(String name, String type, String status, double price, String imagePath) {
+    public PCComponent(String name, String type, String status,int quantity, double price, String imagePath) {
         this.name = name;
         this.type = type;
         this.status = status;
+        this.quantity = quantity;
         this.price = price;
         this.imagePath = imagePath;
     }
@@ -26,12 +28,14 @@ public class PCComponent {
     public String getName() { return name; }
     public String getType() { return type; }
     public String getStatus() { return status; }
+    public int getQuantity(){return quantity;}
     public double getPrice() { return price; }
     public String getImagePath() { return imagePath; }
 
     public void setName(String name) { this.name = name; }
     public void setType(String type) { this.type = type; }
     public void setStatus(String status) { this.status = status; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
     public void setPrice(double price) { this.price = price; }
     public void setImagePath(String imagePath) { this.imagePath = imagePath; }
 }
