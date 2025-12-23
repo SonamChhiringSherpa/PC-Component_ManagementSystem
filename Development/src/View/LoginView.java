@@ -92,12 +92,12 @@ public class LoginView extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         jLabel1.setText("PC Component Management System");
         jPanel1.add(jLabel1);
-        jLabel1.setBounds(130, 30, 419, 32);
+        jLabel1.setBounds(130, 30, 419, 30);
 
         ParentForm.setLayout(new java.awt.CardLayout());
 
         UserForm.setBackground(new java.awt.Color(255, 255, 255));
-        UserForm.setBorder(javax.swing.BorderFactory.createLineBorder(null));
+        UserForm.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         UserForm.setLayout(new java.awt.CardLayout());
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
@@ -108,6 +108,11 @@ public class LoginView extends javax.swing.JFrame {
         jLabel4.setText("Password: ");
 
         UserLoginConfirm.setText("Confirm");
+        UserLoginConfirm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UserLoginConfirmActionPerformed(evt);
+            }
+        });
 
         SignupButton.setText("Signup");
         SignupButton.addActionListener(new java.awt.event.ActionListener() {
@@ -306,6 +311,11 @@ public class LoginView extends javax.swing.JFrame {
         });
 
         AdminConfirm.setText("Login");
+        AdminConfirm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AdminConfirmActionPerformed(evt);
+            }
+        });
 
         AdminSignupButton.setText("SignUp");
         AdminSignupButton.addActionListener(new java.awt.event.ActionListener() {
@@ -402,7 +412,7 @@ public class LoginView extends javax.swing.JFrame {
                         .addGroup(AdminSignupLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, AdminSignupLayout.createSequentialGroup()
                                 .addComponent(jLabel15)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
                                 .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, AdminSignupLayout.createSequentialGroup()
                                 .addGroup(AdminSignupLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -564,6 +574,51 @@ public class LoginView extends javax.swing.JFrame {
         ParentForm.repaint();
         ParentForm.revalidate();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void UserLoginConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserLoginConfirmActionPerformed
+        // TODO add your handling code here:
+         String user = jTextField1.getText().trim();
+    String pass = new String(jPasswordField1.getPassword()).trim();
+
+    if (user.equals("user") && pass.equals("1234")) {
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "Login successful", "Success",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        // Open UserView
+        UserView uv = new UserView();
+        uv.setLocationRelativeTo(this);   // center relative to login
+        uv.setVisible(true);
+        //terminates the Login page after successfull login
+        this.dispose();  
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "Invalid username or password", "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_UserLoginConfirmActionPerformed
+
+    private void AdminConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdminConfirmActionPerformed
+        // TODO add your handling code here:
+         String user = jTextField5.getText().trim();
+    String pass = new String(jPasswordField4.getPassword()).trim();
+
+    if (user.equals("admin") && pass.equals("1234")) {
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "Login successful", "Success",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        
+        // Open AdminView page
+        AdminDashboard ad = new AdminDashboard();
+        ad.setLocationRelativeTo(this);
+        ad.setVisible(true);
+        // terminate the login page after successfull login
+        this.dispose();
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "Invalid username or password", "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_AdminConfirmActionPerformed
 
     /**
      * @param args the command line arguments

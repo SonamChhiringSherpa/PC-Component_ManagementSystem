@@ -175,6 +175,9 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Confirm"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="UserLoginConfirmActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="SignupButton">
                       <Properties>
@@ -474,6 +477,9 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Login"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="AdminConfirmActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="AdminSignupButton">
                       <Properties>
@@ -508,7 +514,7 @@
                                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                                           <Group type="102" alignment="0" attributes="0">
                                               <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace pref="68" max="32767" attributes="0"/>
+                                              <EmptySpace pref="73" max="32767" attributes="0"/>
                                               <Component id="jTextField6" min="-2" pref="164" max="-2" attributes="0"/>
                                           </Group>
                                           <Group type="102" alignment="0" attributes="0">
