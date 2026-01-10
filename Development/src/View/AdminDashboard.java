@@ -556,7 +556,7 @@ public class AdminDashboard extends javax.swing.JFrame {
             double price = Double.parseDouble(ComponentPriceField1.getText());
             controller.updateComponent(
                     selectedComponent,
-                    nameField1.getName(),
+                    nameField1.setText(selectedComponent.getName()),
                     CompTypeCombobox1.getSelectedItem().toString(),
                     StatusComboBox1.getSelectedItem().toString(),
                     quantity, // int
