@@ -11,14 +11,17 @@ import Controller.LoginController;
  * @author user
  */
 public class Login extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Login.class.getName());
 
-    /**
-     * Creates new form Login
-     */
+//    a controller instance for login window it holds the shared linkedlist that has user and admin login credentails
+    private LoginController controller;
+
     public Login() {
         initComponents();
+
+        // creating controller so that no more controller are created inside the button clicks
+        controller = new LoginController(this);
     }
 
     /**
@@ -30,40 +33,43 @@ public class Login extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        Login_Role = new javax.swing.ButtonGroup();
+        Signup_Role = new javax.swing.ButtonGroup();
         LoginSmartPanel = new javax.swing.JPanel();
         LoginForm = new javax.swing.JPanel();
-        UserLoginBtn = new javax.swing.JButton();
-        AdminLoginBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         LoginUsernameField = new javax.swing.JTextField();
         LoginPasswordField = new javax.swing.JPasswordField();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         UserLoginConfirmBtn1 = new javax.swing.JButton();
-        CreateUser = new javax.swing.JButton();
-        CreateAdmin = new javax.swing.JButton();
-        NewAdminForm = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        NewAdminUserNameField = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        NewAdminPasswordField = new javax.swing.JPasswordField();
-        NewAdminConfirmPasswordField = new javax.swing.JPasswordField();
-        jLabel6 = new javax.swing.JLabel();
-        NewAdminConfirmBtn = new javax.swing.JButton();
-        BackFromNewAdminBtn = new javax.swing.JButton();
-        NewUserForm = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        jRadio_user = new javax.swing.JRadioButton();
+        jRadio_admin = new javax.swing.JRadioButton();
+        Login_clear = new javax.swing.JButton();
+        Signup_btn = new javax.swing.JButton();
+        Signup_Form = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
-        NewUserUsernameField = new javax.swing.JTextField();
+        SignupUsername = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        NewUserPasswordField = new javax.swing.JPasswordField();
-        NewUserConfirmPasswordField = new javax.swing.JPasswordField();
+        SignupPassword = new javax.swing.JPasswordField();
+        SignupConfirmPassword = new javax.swing.JPasswordField();
         jLabel12 = new javax.swing.JLabel();
-        NewUserConfirmBtn = new javax.swing.JButton();
-        BackFromNewUserBtn = new javax.swing.JButton();
+        Signup_confirm = new javax.swing.JButton();
+        BackFromSignup = new javax.swing.JButton();
+        jLabel14 = new javax.swing.JLabel();
+        Signup_userRadio = new javax.swing.JRadioButton();
+        Signup_adminRadio = new javax.swing.JRadioButton();
+        Signup_clear = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+
+        Login_Role.add(jRadio_user);
+        Login_Role.add(jRadio_admin);
+
+        Signup_Role.add(Signup_userRadio);
+        Signup_Role.add(Signup_adminRadio);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -71,238 +77,115 @@ public class Login extends javax.swing.JFrame {
 
         LoginForm.setBackground(new java.awt.Color(255, 255, 255));
         LoginForm.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        LoginForm.setLayout(null);
 
-        UserLoginBtn.setText("User");
-        UserLoginBtn.addActionListener(this::UserLoginBtnActionPerformed);
-
-        AdminLoginBtn.setText("Admin");
-        AdminLoginBtn.addActionListener(this::AdminLoginBtnActionPerformed);
-
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel2.setText("Login As");
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel2.setText("Login ");
+        LoginForm.add(jLabel2);
+        jLabel2.setBounds(310, 20, 80, 30);
+        LoginForm.add(LoginUsernameField);
+        LoginUsernameField.setBounds(308, 87, 132, 23);
+        LoginForm.add(LoginPasswordField);
+        LoginPasswordField.setBounds(308, 128, 132, 23);
 
         jLabel7.setText("Username:");
+        LoginForm.add(jLabel7);
+        jLabel7.setBounds(172, 90, 63, 17);
 
         jLabel8.setText("Password:");
+        LoginForm.add(jLabel8);
+        jLabel8.setBounds(173, 131, 62, 17);
 
         UserLoginConfirmBtn1.setText("Confirm");
         UserLoginConfirmBtn1.addActionListener(this::UserLoginConfirmBtn1ActionPerformed);
+        LoginForm.add(UserLoginConfirmBtn1);
+        UserLoginConfirmBtn1.setBounds(310, 220, 75, 23);
 
-        CreateUser.setText("Create New User");
-        CreateUser.addActionListener(this::CreateUserActionPerformed);
+        jLabel13.setText("Role:");
+        LoginForm.add(jLabel13);
+        jLabel13.setBounds(205, 171, 30, 17);
 
-        CreateAdmin.setText("Create New Admin");
-        CreateAdmin.addActionListener(this::CreateAdminActionPerformed);
+        jRadio_user.setText("User");
+        LoginForm.add(jRadio_user);
+        jRadio_user.setBounds(308, 169, 50, 21);
+        jRadio_user.setActionCommand("USER");
+        jRadio_user.setSelected(true);
 
-        javax.swing.GroupLayout LoginFormLayout = new javax.swing.GroupLayout(LoginForm);
-        LoginForm.setLayout(LoginFormLayout);
-        LoginFormLayout.setHorizontalGroup(
-            LoginFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(LoginFormLayout.createSequentialGroup()
-                .addGroup(LoginFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(CreateAdmin)
-                    .addComponent(CreateUser, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(LoginFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(LoginFormLayout.createSequentialGroup()
-                            .addGap(171, 171, 171)
-                            .addGroup(LoginFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING))
-                            .addGap(73, 73, 73)
-                            .addGroup(LoginFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(LoginUsernameField)
-                                .addComponent(LoginPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(LoginFormLayout.createSequentialGroup()
-                            .addGap(153, 153, 153)
-                            .addComponent(jLabel2)
-                            .addGroup(LoginFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(LoginFormLayout.createSequentialGroup()
-                                    .addGap(34, 34, 34)
-                                    .addComponent(UserLoginConfirmBtn1))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LoginFormLayout.createSequentialGroup()
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(LoginFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LoginFormLayout.createSequentialGroup()
-                                            .addGap(99, 99, 99)
-                                            .addComponent(AdminLoginBtn))
-                                        .addGroup(LoginFormLayout.createSequentialGroup()
-                                            .addComponent(UserLoginBtn)
-                                            .addGap(98, 98, 98))))))))
-                .addContainerGap(221, Short.MAX_VALUE))
-        );
-        LoginFormLayout.setVerticalGroup(
-            LoginFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(LoginFormLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(LoginFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addGroup(LoginFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(UserLoginBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(AdminLoginBtn)))
-                .addGap(33, 33, 33)
-                .addGroup(LoginFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LoginUsernameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
-                .addGap(18, 18, 18)
-                .addGroup(LoginFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(LoginPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(UserLoginConfirmBtn1)
-                .addGap(33, 33, 33)
-                .addComponent(CreateUser)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(CreateAdmin)
-                .addContainerGap(69, Short.MAX_VALUE))
-        );
+        jRadio_admin.setText("Admin");
+        LoginForm.add(jRadio_admin);
+        jRadio_admin.setBounds(364, 169, 60, 21);
+        jRadio_admin.setActionCommand("ADMIN");
 
-        LoginSmartPanel.add(LoginForm, "card2");
+        Login_clear.setText("Clear");
+        Login_clear.addActionListener(this::Login_clearActionPerformed);
+        LoginForm.add(Login_clear);
+        Login_clear.setBounds(410, 220, 72, 23);
 
-        NewAdminForm.setBackground(new java.awt.Color(255, 255, 255));
-        NewAdminForm.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Signup_btn.setText("Signup");
+        Signup_btn.addActionListener(this::Signup_btnActionPerformed);
+        LoginForm.add(Signup_btn);
+        Signup_btn.setBounds(310, 270, 72, 23);
 
-        jLabel3.setText("Username:");
+        LoginSmartPanel.add(LoginForm, "login");
 
-        jLabel4.setText("Password:");
-
-        jLabel5.setText("Confirm password:");
-
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel6.setText("New Admin Form");
-
-        NewAdminConfirmBtn.setText("Confirm");
-
-        BackFromNewAdminBtn.setText("Back");
-        BackFromNewAdminBtn.addActionListener(this::BackFromNewAdminBtnActionPerformed);
-
-        javax.swing.GroupLayout NewAdminFormLayout = new javax.swing.GroupLayout(NewAdminForm);
-        NewAdminForm.setLayout(NewAdminFormLayout);
-        NewAdminFormLayout.setHorizontalGroup(
-            NewAdminFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NewAdminFormLayout.createSequentialGroup()
-                .addGroup(NewAdminFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(NewAdminFormLayout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(BackFromNewAdminBtn)
-                        .addGap(134, 134, 134)
-                        .addComponent(jLabel6))
-                    .addGroup(NewAdminFormLayout.createSequentialGroup()
-                        .addGroup(NewAdminFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(NewAdminFormLayout.createSequentialGroup()
-                                .addGap(196, 196, 196)
-                                .addGroup(NewAdminFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4)))
-                            .addGroup(NewAdminFormLayout.createSequentialGroup()
-                                .addGap(149, 149, 149)
-                                .addComponent(jLabel5)))
-                        .addGap(42, 42, 42)
-                        .addGroup(NewAdminFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(NewAdminConfirmBtn)
-                            .addGroup(NewAdminFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(NewAdminPasswordField, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                                .addComponent(NewAdminUserNameField)
-                                .addComponent(NewAdminConfirmPasswordField)))))
-                .addContainerGap(229, Short.MAX_VALUE))
-        );
-        NewAdminFormLayout.setVerticalGroup(
-            NewAdminFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NewAdminFormLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(NewAdminFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(BackFromNewAdminBtn))
-                .addGap(28, 28, 28)
-                .addGroup(NewAdminFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(NewAdminUserNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(NewAdminFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(NewAdminPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(NewAdminFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(NewAdminConfirmPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
-                .addComponent(NewAdminConfirmBtn)
-                .addContainerGap(132, Short.MAX_VALUE))
-        );
-
-        LoginSmartPanel.add(NewAdminForm, "card3");
-
-        NewUserForm.setBackground(new java.awt.Color(255, 255, 255));
-        NewUserForm.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Signup_Form.setBackground(new java.awt.Color(255, 255, 255));
+        Signup_Form.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Signup_Form.setLayout(null);
 
         jLabel9.setText("Username:");
+        Signup_Form.add(jLabel9);
+        jLabel9.setBounds(197, 83, 63, 17);
+        Signup_Form.add(SignupUsername);
+        SignupUsername.setBounds(303, 80, 130, 23);
 
         jLabel10.setText("Password:");
+        Signup_Form.add(jLabel10);
+        jLabel10.setBounds(197, 115, 62, 17);
 
         jLabel11.setText("Confirm password:");
+        Signup_Form.add(jLabel11);
+        jLabel11.setBounds(150, 150, 111, 17);
+        Signup_Form.add(SignupPassword);
+        SignupPassword.setBounds(303, 115, 130, 23);
+        Signup_Form.add(SignupConfirmPassword);
+        SignupConfirmPassword.setBounds(303, 150, 130, 23);
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel12.setText("New User Form");
+        jLabel12.setText("Signup ");
+        Signup_Form.add(jLabel12);
+        jLabel12.setBounds(303, 27, 70, 22);
 
-        NewUserConfirmBtn.setText("Confirm");
+        Signup_confirm.setText("Confirm");
+        Signup_confirm.addActionListener(this::Signup_confirmActionPerformed);
+        Signup_Form.add(Signup_confirm);
+        Signup_confirm.setBounds(300, 240, 75, 23);
 
-        BackFromNewUserBtn.setText("Back");
-        BackFromNewUserBtn.addActionListener(this::BackFromNewUserBtnActionPerformed);
+        BackFromSignup.setText("Back");
+        BackFromSignup.addActionListener(this::BackFromSignupActionPerformed);
+        Signup_Form.add(BackFromSignup);
+        BackFromSignup.setBounds(27, 29, 72, 23);
 
-        javax.swing.GroupLayout NewUserFormLayout = new javax.swing.GroupLayout(NewUserForm);
-        NewUserForm.setLayout(NewUserFormLayout);
-        NewUserFormLayout.setHorizontalGroup(
-            NewUserFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NewUserFormLayout.createSequentialGroup()
-                .addGroup(NewUserFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(NewUserFormLayout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(BackFromNewUserBtn)
-                        .addGap(134, 134, 134)
-                        .addComponent(jLabel12))
-                    .addGroup(NewUserFormLayout.createSequentialGroup()
-                        .addGroup(NewUserFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(NewUserFormLayout.createSequentialGroup()
-                                .addGap(196, 196, 196)
-                                .addGroup(NewUserFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel9)
-                                    .addComponent(jLabel10)))
-                            .addGroup(NewUserFormLayout.createSequentialGroup()
-                                .addGap(149, 149, 149)
-                                .addComponent(jLabel11)))
-                        .addGap(42, 42, 42)
-                        .addGroup(NewUserFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(NewUserConfirmBtn)
-                            .addGroup(NewUserFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(NewUserPasswordField, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                                .addComponent(NewUserUsernameField)
-                                .addComponent(NewUserConfirmPasswordField)))))
-                .addContainerGap(229, Short.MAX_VALUE))
-        );
-        NewUserFormLayout.setVerticalGroup(
-            NewUserFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NewUserFormLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(NewUserFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(BackFromNewUserBtn))
-                .addGap(28, 28, 28)
-                .addGroup(NewUserFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(NewUserUsernameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(NewUserFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(NewUserPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(NewUserFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel11)
-                    .addComponent(NewUserConfirmPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
-                .addComponent(NewUserConfirmBtn)
-                .addContainerGap(132, Short.MAX_VALUE))
-        );
+        jLabel14.setText("Role:");
+        Signup_Form.add(jLabel14);
+        jLabel14.setBounds(230, 190, 30, 17);
 
-        LoginSmartPanel.add(NewUserForm, "card4");
+        Signup_userRadio.setText("User");
+        Signup_Form.add(Signup_userRadio);
+        Signup_userRadio.setBounds(303, 191, 50, 21);
+        Signup_userRadio.setActionCommand("USER");
+        Signup_userRadio.setSelected(true);
+
+        Signup_adminRadio.setText("Admin");
+        Signup_Form.add(Signup_adminRadio);
+        Signup_adminRadio.setBounds(371, 191, 60, 21);
+        Signup_adminRadio.setActionCommand("ADMIN");
+
+        Signup_clear.setText("Clear");
+        Signup_clear.addActionListener(this::Signup_clearActionPerformed);
+        Signup_Form.add(Signup_clear);
+        Signup_clear.setBounds(410, 240, 72, 23);
+
+        LoginSmartPanel.add(Signup_Form, "signup");
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("PC Component Management System");
@@ -329,66 +212,51 @@ public class Login extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(LoginSmartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(LoginSmartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 701, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2)
-                .addComponent(LoginSmartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(LoginSmartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void CreateUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateUserActionPerformed
-        // on clicking the create User button the New user creation form will open
-        LoginSmartPanel.removeAll();
-        LoginSmartPanel.add(NewUserForm);
-        LoginSmartPanel.repaint();
-        LoginSmartPanel.revalidate();
-    }//GEN-LAST:event_CreateUserActionPerformed
+    //this returns you back to the Login page after clicking the back button in signup form
+    private void BackFromSignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackFromSignupActionPerformed
+        //opens the Login page
+        controller.openLogin();
+    }//GEN-LAST:event_BackFromSignupActionPerformed
 
-    private void CreateAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateAdminActionPerformed
-        // on clicking the create Admin btn the new admin creation form will open
-        LoginSmartPanel.removeAll();
-        LoginSmartPanel.add(NewAdminForm);
-        LoginSmartPanel.repaint();
-        LoginSmartPanel.revalidate();
-    }//GEN-LAST:event_CreateAdminActionPerformed
-
-    private void BackFromNewAdminBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackFromNewAdminBtnActionPerformed
-        // returns back to the Login form from New Admin login form
-        LoginSmartPanel.removeAll();
-        LoginSmartPanel.add(LoginForm);
-        LoginSmartPanel.repaint();
-        LoginSmartPanel.revalidate();
-    }//GEN-LAST:event_BackFromNewAdminBtnActionPerformed
-
-    private void BackFromNewUserBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackFromNewUserBtnActionPerformed
-        // returns back to the Login form from New User login form
-        LoginSmartPanel.removeAll();
-        LoginSmartPanel.add(LoginForm);
-        LoginSmartPanel.repaint();
-        LoginSmartPanel.revalidate();
-    }//GEN-LAST:event_BackFromNewUserBtnActionPerformed
-
-    private void UserLoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserLoginBtnActionPerformed
-        // sets the selectedRole as "USER"
-         selectedRole = "USER";
-    }//GEN-LAST:event_UserLoginBtnActionPerformed
-
-    private void AdminLoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdminLoginBtnActionPerformed
-        // sets the selectedRole as "Admin"
-         selectedRole = "ADMIN";
-    }//GEN-LAST:event_AdminLoginBtnActionPerformed
-
+//    Login Confirm button sends current login inputs to controller for validation.
+//    If valid, controller opens AdminDashboard or UserView.
     private void UserLoginConfirmBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserLoginConfirmBtn1ActionPerformed
-        // TODO add your handling code here:
-        LoginController controller = new LoginController(this);
         controller.login();
     }//GEN-LAST:event_UserLoginConfirmBtn1ActionPerformed
+
+    private void Signup_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Signup_btnActionPerformed
+//     opens the signup form for both user and admin with the option to choose role 
+        controller.openSignup();
+    }//GEN-LAST:event_Signup_btnActionPerformed
+
+//    Signup Confirm button sends signup inputs (username, pass, confirm pass, role)
+//    to controller, which creates account in the LinkedList and shows success/error
+    private void Signup_confirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Signup_confirmActionPerformed
+        controller.signup();
+    }//GEN-LAST:event_Signup_confirmActionPerformed
+
+    private void Signup_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Signup_clearActionPerformed
+        //clears the signup form
+        clearSignupForm();
+    }//GEN-LAST:event_Signup_clearActionPerformed
+
+    private void Login_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Login_clearActionPerformed
+        // clears the login form
+        clearLoginForm();
+    }//GEN-LAST:event_Login_clearActionPerformed
 
     /**
      * @param args the command line arguments
@@ -416,55 +284,123 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton AdminLoginBtn;
-    private javax.swing.JButton BackFromNewAdminBtn;
-    private javax.swing.JButton BackFromNewUserBtn;
-    private javax.swing.JButton CreateAdmin;
-    private javax.swing.JButton CreateUser;
+    private javax.swing.JButton BackFromSignup;
     private javax.swing.JPanel LoginForm;
     private javax.swing.JPasswordField LoginPasswordField;
     private javax.swing.JPanel LoginSmartPanel;
     private javax.swing.JTextField LoginUsernameField;
-    private javax.swing.JButton NewAdminConfirmBtn;
-    private javax.swing.JPasswordField NewAdminConfirmPasswordField;
-    private javax.swing.JPanel NewAdminForm;
-    private javax.swing.JPasswordField NewAdminPasswordField;
-    private javax.swing.JTextField NewAdminUserNameField;
-    private javax.swing.JButton NewUserConfirmBtn;
-    private javax.swing.JPasswordField NewUserConfirmPasswordField;
-    private javax.swing.JPanel NewUserForm;
-    private javax.swing.JPasswordField NewUserPasswordField;
-    private javax.swing.JTextField NewUserUsernameField;
-    private javax.swing.JButton UserLoginBtn;
+    private javax.swing.ButtonGroup Login_Role;
+    private javax.swing.JButton Login_clear;
+    private javax.swing.JPasswordField SignupConfirmPassword;
+    private javax.swing.JPasswordField SignupPassword;
+    private javax.swing.JTextField SignupUsername;
+    private javax.swing.JPanel Signup_Form;
+    private javax.swing.ButtonGroup Signup_Role;
+    private javax.swing.JRadioButton Signup_adminRadio;
+    private javax.swing.JButton Signup_btn;
+    private javax.swing.JButton Signup_clear;
+    private javax.swing.JButton Signup_confirm;
+    private javax.swing.JRadioButton Signup_userRadio;
     private javax.swing.JButton UserLoginConfirmBtn1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JRadioButton jRadio_admin;
+    private javax.swing.JRadioButton jRadio_user;
     // End of variables declaration//GEN-END:variables
-    
-    //Variable to store the selected login as option
-    private String selectedRole = "";
 
-    public String getSelectedRole() {
-        return selectedRole;
+    // Card names must match exactly the names used in:
+    // LoginSmartPanel.add(LoginForm, "card2");
+    // LoginSmartPanel.add(Signup_Form, "card4");
+    private static final String CARD_LOGIN = "login";
+    private static final String CARD_SIGNUP = "signup";
+
+    //this method returns the cardname 
+    public void showCard(String cardName) {
+        java.awt.CardLayout cl = (java.awt.CardLayout) LoginSmartPanel.getLayout();
+        cl.show(LoginSmartPanel, cardName);
     }
 
+    //getter methods for the Login page
+    //the getSelectedRole method returns the selected role from the loginform and validated if the selection is null 
+    public String getSelectedRole() {
+        if (Login_Role.getSelection() == null) {
+            return null;
+        }
+        return Login_Role.getSelection().getActionCommand(); // get selected role 
+    }
+
+    //this method returns the username from the login form
     public String getUsername() {
         return LoginUsernameField.getText();
     }
 
+    //this method returns the password from the login form
     public String getPassword() {
         return new String(LoginPasswordField.getPassword());
-}
+    }
+
+//    getter methods for the signup page
+    //this method returns the selected role from the signup form and also validates if the role is selected or not 
+    public String getSignupRole() {
+        if (Signup_Role.getSelection() == null) {
+            return null;
+        }
+        return Signup_Role.getSelection().getActionCommand();
+    }
+
+    //this method returns the username that is given in the signup form
+    public String getSignupUsername() {
+        return SignupUsername.getText();
+    }
+
+    //this method returns the password that is given in the singup form
+    public String getSignupPassword() {
+        return new String(SignupPassword.getPassword());
+    }
+
+    // this method returns the confirm password from the signupform 
+    public String getSignupConfirmPassword() {
+        return new String(SignupConfirmPassword.getPassword());
+    }
+
+    //Shows an error message dialog (used for validation errors and invalid login)
+    public void showError(String msg) {
+        javax.swing.JOptionPane.showMessageDialog(
+                this, msg, "Error", javax.swing.JOptionPane.ERROR_MESSAGE
+        );
+    }
+
+    //Shows an information message dialog (used for success messages).
+    public void showInfo(String msg) {
+        javax.swing.JOptionPane.showMessageDialog(
+                this, msg, "Info", javax.swing.JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
+    //Clears the login form inputs and resets role selection to default User.
+    public void clearLoginForm() {
+        LoginUsernameField.setText("");
+        LoginPasswordField.setText("");
+        Login_Role.clearSelection();
+        jRadio_user.setSelected(true); // optional default
+    }
+
+    //Clears the signup form inputs and resets role selection to default User.
+    public void clearSignupForm() {
+        SignupUsername.setText("");
+        SignupPassword.setText("");
+        SignupConfirmPassword.setText("");
+        Signup_Role.clearSelection();
+        Signup_userRadio.setSelected(true); // optional default
+    }
 
 }
