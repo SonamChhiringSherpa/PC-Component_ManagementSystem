@@ -120,19 +120,26 @@ public class LoginModel {
     // logincontroller creates appcontext once and uses the same repo for signup and login
     public static class AppContext {
 
-        private final AccountRepository repo = new AccountRepository();
+        private static AppContext instance;         // one shared instance
+    private final AccountRepository repo;
 
-        // constructor that holds the predefinied accounts to login without signup
-        public AppContext() {
-            // predefined admin
-            repo.adminAccounts.add(new UserAccount("admin", "1234", "ADMIN"));
-            // predefined user
-            repo.userAccounts.add(new UserAccount("user", "1234", "USER"));
-        }
+    private AppContext() {
+        repo = new AccountRepository();
 
-        // gives controller access to the shared repository
-        public AccountRepository getRepo() {
-            return repo;
+        // predefined accounts ONLY ONCE
+        repo.addAccount(new UserAccount("admin", "1234", "ADMIN"));
+        repo.addAccount(new UserAccount("user", "1234", "USER"));
+    }
+
+    public static synchronized AppContext getInstance() {
+        if (instance == null) {
+            instance = new AppContext();
         }
+        return instance;
+    }
+
+    public AccountRepository getRepo() {
+        return repo;
+    }
     }
 }

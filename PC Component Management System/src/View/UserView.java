@@ -4,18 +4,30 @@
  */
 package View;
 
+import Model.CartItem;
+import Model.CartStack;
 import Controller.PCComponentController;
 import Model.PCComponent;
 import java.util.LinkedList;
-import javax.swing.table.DefaultTableModel;
-import View.Login;
 import javax.swing.JOptionPane;
+import Model.PCComponentTableModel;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
  * @author sonamchhiringsherpa
  */
 public class UserView extends javax.swing.JFrame {
+
+    private final CartStack cartStack = new CartStack();
+    private final PCComponentTableModel tableModel = new PCComponentTableModel(120, 80);
+    private final TableRowSorter<PCComponentTableModel> sorter = new TableRowSorter<>(tableModel);
 
     LinkedList<PCComponent> components = PCComponent.getComponents();
 
@@ -26,8 +38,14 @@ public class UserView extends javax.swing.JFrame {
      */
     public UserView() {
         initComponents();
+
+        componentTable.setModel(tableModel);
+        componentTable.setRowSorter(sorter);   // sorting/filtering support [web:418]
+        componentTable.setRowHeight(90);
+
         PCComponent.initDummyData();
-        loadTable();
+        refreshTable();
+
     }
 
     /**
@@ -64,11 +82,12 @@ public class UserView extends javax.swing.JFrame {
         ItemPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         componentTable = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        addToCart = new javax.swing.JButton();
         CartPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
+        updateCartQuantity = new javax.swing.JButton();
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -309,25 +328,29 @@ public class UserView extends javax.swing.JFrame {
         );
         ItemPanelLayout.setVerticalGroup(
             ItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
         );
 
-        jButton1.setText("Add to Cart");
+        addToCart.setText("Add to Cart");
+        addToCart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addToCartActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout ComponentsPanelLayout = new javax.swing.GroupLayout(ComponentsPanel);
         ComponentsPanel.setLayout(ComponentsPanelLayout);
         ComponentsPanelLayout.setHorizontalGroup(
             ComponentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ComponentsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(ComponentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(ItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(FilterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
             .addGroup(ComponentsPanelLayout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(ComponentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ItemPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(FilterPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(ComponentsPanelLayout.createSequentialGroup()
+                        .addComponent(addToCart)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         ComponentsPanelLayout.setVerticalGroup(
             ComponentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -335,29 +358,36 @@ public class UserView extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(FilterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ItemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
-                .addContainerGap(176, Short.MAX_VALUE))
+                .addComponent(addToCart)
+                .addGap(86, 86, 86))
         );
 
         SmartPanel.add(ComponentsPanel, "card4");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Name", "Component Type", "Quantity", "Unit Price", "Total"
             }
         ));
         jScrollPane2.setViewportView(jTable1);
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel4.setText("Your Items");
+
+        updateCartQuantity.setText("Update Qty");
+        updateCartQuantity.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateCartQuantityActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout CartPanelLayout = new javax.swing.GroupLayout(CartPanel);
         CartPanel.setLayout(CartPanelLayout);
@@ -368,7 +398,9 @@ public class UserView extends javax.swing.JFrame {
                 .addGroup(CartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
                     .addGroup(CartPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel4)
+                        .addGroup(CartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(updateCartQuantity))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -378,8 +410,10 @@ public class UserView extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addComponent(jLabel4)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(112, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addComponent(updateCartQuantity)
+                .addContainerGap(195, Short.MAX_VALUE))
         );
 
         SmartPanel.add(CartPanel, "card5");
@@ -445,38 +479,38 @@ public class UserView extends javax.swing.JFrame {
 
     private void sortByNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortByNameActionPerformed
         LinkedList<PCComponent> sorted = controller.sortByName();
-        loadTable(sorted);
+        tableModel.setData(sorted);
     }//GEN-LAST:event_sortByNameActionPerformed
 
     private void sortByPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortByPriceActionPerformed
         LinkedList<PCComponent> sorted = controller.sortByPrice();
-        loadTable(sorted);
+        tableModel.setData(sorted);
     }//GEN-LAST:event_sortByPriceActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-       String searchTerm = searchField.getText().trim();
-    if (searchTerm.isEmpty() || searchTerm.equals("Search")) {
-        JOptionPane.showMessageDialog(this, "Please enter a search term.", "Search Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        String searchTerm = searchField.getText().trim();
+        if (searchTerm.isEmpty() || searchTerm.equals("Search")) {
+            JOptionPane.showMessageDialog(this, "Please enter a search term.", "Search Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    LinkedList<PCComponent> results = controller.searchByName(searchTerm);
-    loadTable(results);
+        LinkedList<PCComponent> results = controller.searchByName(searchTerm);
+        tableModel.setData(results);
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
-      String type = (String) componentList_combobox.getSelectedItem();
-    if (type == null || type.isEmpty() || componentList_combobox.getSelectedIndex() == 0) {
-        JOptionPane.showMessageDialog(this, "Please select a valid component type.", "Filter Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        String type = (String) componentList_combobox.getSelectedItem();
+        if (type == null || type.isEmpty() || componentList_combobox.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this, "Please select a valid component type.", "Filter Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    LinkedList<PCComponent> filtered = controller.filterByType(type);
-    loadTable(filtered);
+        LinkedList<PCComponent> filtered = controller.filterByType(type);
+        tableModel.setData(filtered);
     }//GEN-LAST:event_filterBtnActionPerformed
 
     private void searchFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchFieldMouseClicked
-        searchField.setText(""); 
+        searchField.setText("");
     }//GEN-LAST:event_searchFieldMouseClicked
 
     private void CartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CartActionPerformed
@@ -485,6 +519,167 @@ public class UserView extends javax.swing.JFrame {
         SmartPanel.repaint();
         SmartPanel.revalidate();
     }//GEN-LAST:event_CartActionPerformed
+
+    private void addToCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addToCartActionPerformed
+        // TODO add your handling code here:
+        int viewRow = componentTable.getSelectedRow();
+        if (viewRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a product first.");
+            return;
+        }
+
+        // because you use TableRowSorter, convert view row -> model row [web:418]
+        int modelRow = componentTable.convertRowIndexToModel(viewRow);
+
+        // Get selected PCComponent from the same list used by your table model
+        // IMPORTANT: this requires PCComponentTableModel.getComponentAt(int)
+        PCComponent selected = tableModel.getComponentAt(modelRow);
+
+        if (selected == null) {
+            JOptionPane.showMessageDialog(this, "Invalid selection.");
+            return;
+        }
+
+        // Build dialog UI: description + quantity spinner
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        String desc
+                = "Name: " + selected.getName() + "\n"
+                + "Type: " + selected.getType() + "\n"
+                + "Status: " + selected.getStatus() + "\n"
+                + "Available Qty: " + selected.getQuantity() + "\n"
+                + "Price: " + selected.getPrice();
+
+        JLabel descLabel = new JLabel("<html>" + desc.replace("\n", "<br>") + "</html>");
+        panel.add(descLabel);
+
+        panel.add(new JLabel(" ")); // spacer
+
+        int maxQty = selected.getQuantity();
+        if (maxQty <= 0) {
+            JOptionPane.showMessageDialog(this, "This product is out of stock.");
+            return;
+        }
+
+        SpinnerNumberModel model = new SpinnerNumberModel(1, 1, maxQty, 1);
+        JSpinner spinner = new JSpinner(model);
+
+        JPanel qtyPanel = new JPanel();
+        qtyPanel.add(new JLabel("Quantity: "));
+        qtyPanel.add(spinner);
+
+        panel.add(qtyPanel);
+
+        int option = JOptionPane.showConfirmDialog(
+                this,
+                panel,
+                "Add to Cart",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.INFORMATION_MESSAGE
+        );
+
+        if (option != JOptionPane.OK_OPTION) {
+            return; // cancelled
+        }
+
+        int qty = ((Integer) spinner.getValue()).intValue();
+
+        int remaining = selected.getQuantity() - qty;
+        selected.setQuantity(remaining);   // requires setQuantity(int) in PCComponent
+        refreshTable();                    // reload main table model
+        refreshCartTable();                // reload cart table
+
+        // update status based on remaining qty
+        if (selected.getQuantity() <= 0) {
+            selected.setStatus("Out of Stock");
+            selected.setQuantity(0); // safety: avoid negative values
+        } else {
+            selected.setStatus("Available");
+        }
+
+        // Push into custom stack (LIFO)
+        cartStack.push(new CartItem(selected, qty));
+
+        // Update cart table
+        refreshCartTable();
+    }//GEN-LAST:event_addToCartActionPerformed
+
+    private void updateCartQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateCartQuantityActionPerformed
+        // TODO add your handling code here:
+        int cartRow = jTable1.getSelectedRow();
+        if (cartRow == -1) {
+            JOptionPane.showMessageDialog(this, "Select an item in the cart first.");
+            return;
+        }
+
+        // Our refreshCartTable() displays cartStack.toList() in order top->bottom,
+        // so cartRow matches stack index.
+        CartItem cartItem = cartStack.getAt(cartRow);
+        if (cartItem == null) {
+            JOptionPane.showMessageDialog(this, "Invalid cart selection.");
+            return;
+        }
+
+        PCComponent pc = cartItem.getComponent();
+
+        // Compute "available" stock for this product:
+        // currentStock is what remains in inventory AFTER earlier adds.
+        // If user already has X in cart, they can change up to currentStock + X.
+        int currentStock = pc.getQuantity();
+        int oldQty = cartItem.getQuantity();
+        int maxAllowed = currentStock + oldQty;
+
+        if (maxAllowed <= 0) {
+            JOptionPane.showMessageDialog(this, "This product is out of stock.");
+            return;
+        }
+
+        javax.swing.JSpinner spinner = new javax.swing.JSpinner(
+                new javax.swing.SpinnerNumberModel(oldQty, 1, maxAllowed, 1)
+        );
+
+        int option = JOptionPane.showConfirmDialog(
+                this,
+                spinner,
+                "Update quantity (max " + maxAllowed + ")",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (option != JOptionPane.OK_OPTION) {
+            return;
+        }
+
+        int newQty = ((Integer) spinner.getValue()).intValue();
+        int diff = newQty - oldQty;  // + means increase cart, - means decrease cart
+
+        // Update inventory based on the difference
+        // If diff > 0: user wants MORE in cart -> reduce stock
+        // If diff < 0: user wants LESS in cart -> return stock back
+        int newStock = currentStock - diff;
+        if (newStock < 0) {
+            JOptionPane.showMessageDialog(this, "Not enough stock available.");
+            return;
+        }
+
+        pc.setQuantity(newStock);
+
+        // status update rule
+        if (pc.getQuantity() <= 0) {
+            pc.setQuantity(0);
+            pc.setStatus("Out of Stock");
+        } else {
+            pc.setStatus("Available");
+        }
+
+        // Update the cart stack node
+        cartStack.updateQuantityAt(cartRow, newQty);
+
+        // Refresh both tables
+        refreshTable();      // main component table
+        refreshCartTable();  // cart table
+    }//GEN-LAST:event_updateCartQuantityActionPerformed
 
     /**
      * @param args the command line arguments
@@ -512,24 +707,32 @@ public class UserView extends javax.swing.JFrame {
     }
     private PCComponentController controller = new PCComponentController();
 
-    // Overloaded: Load all components (no parameter)
-    public void loadTable() {
-        loadTable(PCComponent.getComponents());
+    private void refreshTable() {
+        tableModel.setData(PCComponent.getComponents());
     }
 
-// Overloaded: Load specific list of components
-    public void loadTable(LinkedList<PCComponent> components) {
-        DefaultTableModel model = (DefaultTableModel) componentTable.getModel();
-        model.setRowCount(0);
+    private void refreshCartTable() {
 
-        for (PCComponent pc : components) {
-            model.addRow(new Object[]{
+        DefaultTableModel cartModel = (DefaultTableModel) jTable1.getModel();
+
+        // If your cart table currently has Title1..Title4, replace its model once:
+        // (do this only once if you want; safe to do every time too)
+        cartModel.setColumnIdentifiers(new Object[]{"Name", "Type", "Qty", "Unit Price", "Total"});
+
+        cartModel.setRowCount(0);
+
+        java.util.List<CartItem> items = cartStack.toList();
+
+        for (int i = 0; i < items.size(); i++) {
+            CartItem ci = items.get(i);
+            PCComponent pc = ci.getComponent();
+
+            cartModel.addRow(new Object[]{
                 pc.getName(),
                 pc.getType(),
-                pc.getStatus(),
-                pc.getQuantity(),
+                ci.getQuantity(),
                 pc.getPrice(),
-                pc.getImagePath()
+                ci.getTotalPrice()
             });
         }
     }
@@ -549,10 +752,10 @@ public class UserView extends javax.swing.JFrame {
     private javax.swing.JButton LogOutButton;
     private javax.swing.JPanel NavigationPanel;
     private javax.swing.JPanel SmartPanel;
+    private javax.swing.JButton addToCart;
     private javax.swing.JComboBox<String> componentList_combobox;
     private javax.swing.JTable componentTable;
     private javax.swing.JButton filterBtn;
-    private javax.swing.JButton jButton1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -566,6 +769,7 @@ public class UserView extends javax.swing.JFrame {
     private javax.swing.JTextField searchField;
     private javax.swing.JButton sortByName;
     private javax.swing.JButton sortByPrice;
+    private javax.swing.JButton updateCartQuantity;
     // End of variables declaration//GEN-END:variables
 
 }

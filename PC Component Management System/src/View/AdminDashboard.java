@@ -6,10 +6,15 @@ package View;
 
 import Controller.PCComponentController;
 import Model.PCComponent;
+import java.awt.Image;
+import java.io.File;
 import java.util.LinkedList;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import Model.PCComponentTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -17,16 +22,31 @@ import javax.swing.table.DefaultTableModel;
  */
 public class AdminDashboard extends javax.swing.JFrame {
 
+    private final PCComponentTableModel tableModel = new PCComponentTableModel(120, 80);
+    private final TableRowSorter<PCComponentTableModel> sorter = new TableRowSorter<>(tableModel);
+
+    private final PCComponentController controller = new PCComponentController();
+
+    private PCComponent selectedComponent;
+    // variable to store the add-product image path
+    private String selectedImagePath = "";
+    // variable to store the update-product image path
+    private String updateSelectedImagePath = "";
+
     LinkedList<PCComponent> components = PCComponent.getComponents();
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminDashboard.class.getName());
 
     /**
      * Creates new form AdminDashboard
      */
-    private PCComponent selectedComponent;
-
     public AdminDashboard() {
         initComponents();
+
+        AdminViewTable.setModel(tableModel);
+        AdminViewTable.setRowSorter(sorter); // optional but useful (sorting) [web:418]
+        AdminViewTable.setRowHeight(90);
+
         PCComponent.initDummyData();
         loadTableData();
     }
@@ -41,13 +61,17 @@ public class AdminDashboard extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         AdminLogoutBtn = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        AddProductBtn = new javax.swing.JButton();
-        ViewProductBtn = new javax.swing.JButton();
-        UpdateProduct = new javax.swing.JButton();
+        jLabel19 = new javax.swing.JLabel();
         AdminSmartPanel = new javax.swing.JPanel();
+        ViewProductPanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        AdminViewTable = new javax.swing.JTable();
+        RemoveProdductBtn = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        UpdateProduct = new javax.swing.JButton();
+        AddProductBtn = new javax.swing.JButton();
+        jLabel15 = new javax.swing.JLabel();
         AddProductPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
@@ -61,13 +85,12 @@ public class AdminDashboard extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        AddProduct = new javax.swing.JButton();
         StatusComboBox = new javax.swing.JComboBox<>();
-        ViewProductPanel = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        AdminViewTable = new javax.swing.JTable();
-        RemoveProdductBtn = new javax.swing.JButton();
-        jLabel9 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        addProductClear = new javax.swing.JButton();
+        jLabel20 = new javax.swing.JLabel();
+        addProductBack = new javax.swing.JButton();
         UpdateProductPanel = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         nameField1 = new javax.swing.JTextField();
@@ -79,14 +102,18 @@ public class AdminDashboard extends javax.swing.JFrame {
         QuantityField1 = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         ComponentPriceField1 = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
+        updateProductBrowse = new javax.swing.JButton();
+        updateProduct_imagePreview = new javax.swing.JLabel();
+        ConfirmUpdateBtn = new javax.swing.JButton();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        updateCancelBtn = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        updateProductBackbtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel1.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
-        jLabel1.setText("PC Component Management System");
 
         AdminLogoutBtn.setText("LogOut");
         AdminLogoutBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -95,185 +122,38 @@ public class AdminDashboard extends javax.swing.JFrame {
             }
         });
 
+        jLabel19.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
+        jLabel19.setText("PC Component Management System");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(59, 59, 59)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(AdminLogoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(41, 41, 41))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(69, 69, 69)
+                    .addComponent(jLabel19)
+                    .addContainerGap(505, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(AdminLogoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
-        );
-
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-
-        AddProductBtn.setText("Add Product");
-        AddProductBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddProductBtnActionPerformed(evt);
-            }
-        });
-
-        ViewProductBtn.setText("View Product");
-        ViewProductBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ViewProductBtnActionPerformed(evt);
-            }
-        });
-
-        UpdateProduct.setText("Update Product");
-        UpdateProduct.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                UpdateProductActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(AddProductBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ViewProductBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
-                    .addComponent(UpdateProduct, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(AddProductBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ViewProductBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(UpdateProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(AdminLogoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addContainerGap(31, Short.MAX_VALUE)
+                    .addComponent(jLabel19)
+                    .addGap(22, 22, 22)))
         );
 
         AdminSmartPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         AdminSmartPanel.setLayout(new java.awt.CardLayout());
-
-        jLabel2.setText("Name:");
-
-        jLabel3.setText("Component Type:");
-
-        CompTypeCombobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "CPU", "GPU", "Motherboard", "RAM", "PSU" }));
-
-        jLabel4.setText("Status:");
-
-        jLabel5.setText("Quantity:");
-
-        jLabel6.setText("Price:");
-
-        jLabel7.setText("Image:");
-
-        jButton1.setText("Browse");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jLabel8.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel8.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
-        jLabel8.setText("ImagePreview");
-
-        jButton2.setText("Add");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        StatusComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Available", "Out of Stock" }));
-
-        javax.swing.GroupLayout AddProductPanelLayout = new javax.swing.GroupLayout(AddProductPanel);
-        AddProductPanel.setLayout(AddProductPanelLayout);
-        AddProductPanelLayout.setHorizontalGroup(
-            AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(AddProductPanelLayout.createSequentialGroup()
-                .addGap(45, 45, 45)
-                .addGroup(AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel7)
-                    .addGroup(AddProductPanelLayout.createSequentialGroup()
-                        .addGroup(AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(AddProductPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(80, 80, 80)
-                                .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(AddProductPanelLayout.createSequentialGroup()
-                                .addGroup(AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel6))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jButton2)
-                                        .addGroup(AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(QuantityField, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                                            .addComponent(ComponentPriceField)
-                                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addComponent(StatusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(AddProductPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, 18)
-                                .addComponent(CompTypeCombobox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(132, 132, 132)
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(224, Short.MAX_VALUE))
-        );
-        AddProductPanelLayout.setVerticalGroup(
-            AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(AddProductPanelLayout.createSequentialGroup()
-                .addGroup(AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(AddProductPanelLayout.createSequentialGroup()
-                        .addGap(38, 38, 38)
-                        .addGroup(AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(CompTypeCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(21, 21, 21)
-                        .addGroup(AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(StatusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(AddProductPanelLayout.createSequentialGroup()
-                        .addGap(39, 39, 39)
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(QuantityField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addComponent(ComponentPriceField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
-                .addGroup(AddProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel7)
-                    .addComponent(jButton1))
-                .addGap(31, 31, 31)
-                .addComponent(jButton2)
-                .addContainerGap(330, Short.MAX_VALUE))
-        );
-
-        AdminSmartPanel.add(AddProductPanel, "card2");
 
         AdminViewTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -295,115 +175,255 @@ public class AdminDashboard extends javax.swing.JFrame {
             }
         });
 
+        UpdateProduct.setText("Update Product");
+        UpdateProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UpdateProductActionPerformed(evt);
+            }
+        });
+
+        AddProductBtn.setText("Add Product");
+        AddProductBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddProductBtnActionPerformed(evt);
+            }
+        });
+
+        jLabel15.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
+        jLabel15.setText("Product List");
+
         javax.swing.GroupLayout ViewProductPanelLayout = new javax.swing.GroupLayout(ViewProductPanel);
         ViewProductPanel.setLayout(ViewProductPanelLayout);
         ViewProductPanelLayout.setHorizontalGroup(
             ViewProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ViewProductPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 797, Short.MAX_VALUE)
+                .addGroup(ViewProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(ViewProductPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 978, Short.MAX_VALUE))
+                    .addGroup(ViewProductPanelLayout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel15)
+                        .addGap(0, 825, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ViewProductPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(RemoveProdductBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(42, 42, 42))
             .addGroup(ViewProductPanelLayout.createSequentialGroup()
-                .addGap(82, 82, 82)
-                .addComponent(jLabel9)
+                .addGap(22, 22, 22)
+                .addGroup(ViewProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(RemoveProdductBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(AddProductBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(UpdateProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         ViewProductPanelLayout.setVerticalGroup(
             ViewProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ViewProductPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(16, 16, 16)
+                .addComponent(jLabel15)
+                .addGroup(ViewProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(ViewProductPanelLayout.createSequentialGroup()
+                        .addGap(382, 382, 382)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(ViewProductPanelLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)))
+                .addComponent(AddProductBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(UpdateProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
                 .addComponent(RemoveProdductBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(jLabel9)
-                .addContainerGap(228, Short.MAX_VALUE))
+                .addGap(52, 52, 52))
         );
 
         AdminSmartPanel.add(ViewProductPanel, "card3");
 
-        jLabel10.setText("Name:");
+        AddProductPanel.setLayout(null);
 
-        CompTypeCombobox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "CPU", "GPU", "Motherboard", "RAM", "PSU" }));
+        jLabel2.setText("Name:");
+        AddProductPanel.add(jLabel2);
+        jLabel2.setBounds(200, 140, 35, 16);
+        AddProductPanel.add(nameField);
+        nameField.setBounds(320, 140, 130, 22);
 
-        jLabel11.setText("Component Type:");
+        jLabel3.setText("Component Type:");
+        AddProductPanel.add(jLabel3);
+        jLabel3.setBounds(200, 180, 96, 16);
 
-        jLabel12.setText("Status:");
+        CompTypeCombobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "CPU", "GPU", "Motherboard", "RAM", "PSU" }));
+        AddProductPanel.add(CompTypeCombobox);
+        CompTypeCombobox.setBounds(320, 180, 131, 22);
 
-        StatusComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Available", "Out of Stock" }));
+        jLabel4.setText("Status:");
+        AddProductPanel.add(jLabel4);
+        jLabel4.setBounds(200, 220, 35, 16);
 
-        jLabel13.setText("Quantity:");
+        jLabel5.setText("Quantity:");
+        AddProductPanel.add(jLabel5);
+        jLabel5.setBounds(200, 260, 60, 16);
+        AddProductPanel.add(QuantityField);
+        QuantityField.setBounds(320, 260, 130, 22);
 
-        jLabel14.setText("Price:");
+        jLabel6.setText("Price:");
+        AddProductPanel.add(jLabel6);
+        jLabel6.setBounds(200, 300, 40, 16);
+        AddProductPanel.add(ComponentPriceField);
+        ComponentPriceField.setBounds(320, 300, 130, 22);
 
-        jButton3.setText("Confirm Update");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        jLabel7.setText("Image:");
+        AddProductPanel.add(jLabel7);
+        jLabel7.setBounds(200, 350, 50, 16);
+
+        jButton1.setText("Browse");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                jButton1ActionPerformed(evt);
             }
         });
+        AddProductPanel.add(jButton1);
+        jButton1.setBounds(320, 350, 84, 23);
 
-        javax.swing.GroupLayout UpdateProductPanelLayout = new javax.swing.GroupLayout(UpdateProductPanel);
-        UpdateProductPanel.setLayout(UpdateProductPanelLayout);
-        UpdateProductPanelLayout.setHorizontalGroup(
-            UpdateProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(UpdateProductPanelLayout.createSequentialGroup()
-                .addGap(56, 56, 56)
-                .addGroup(UpdateProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton3)
-                    .addGroup(UpdateProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(UpdateProductPanelLayout.createSequentialGroup()
-                            .addComponent(jLabel10)
-                            .addGap(80, 80, 80)
-                            .addComponent(nameField1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(UpdateProductPanelLayout.createSequentialGroup()
-                            .addGroup(UpdateProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel12)
-                                .addComponent(jLabel13)
-                                .addComponent(jLabel14))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(UpdateProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(UpdateProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(QuantityField1)
-                                    .addComponent(ComponentPriceField1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(StatusComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(UpdateProductPanelLayout.createSequentialGroup()
-                            .addComponent(jLabel11)
-                            .addGap(18, 18, 18)
-                            .addComponent(CompTypeCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(505, Short.MAX_VALUE))
-        );
-        UpdateProductPanelLayout.setVerticalGroup(
-            UpdateProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(UpdateProductPanelLayout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addGroup(UpdateProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(nameField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(UpdateProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11)
-                    .addComponent(CompTypeCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(21, 21, 21)
-                .addGroup(UpdateProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(StatusComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(UpdateProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel13)
-                    .addComponent(QuantityField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(UpdateProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel14)
-                    .addComponent(ComponentPriceField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(32, 32, 32)
-                .addComponent(jButton3)
-                .addContainerGap(394, Short.MAX_VALUE))
-        );
+        jLabel8.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel8.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
+        jLabel8.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        AddProductPanel.add(jLabel8);
+        jLabel8.setBounds(550, 160, 190, 170);
+
+        AddProduct.setText("Add");
+        AddProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddProductActionPerformed(evt);
+            }
+        });
+        AddProductPanel.add(AddProduct);
+        AddProduct.setBounds(320, 410, 72, 23);
+
+        StatusComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Available", "Out of Stock" }));
+        AddProductPanel.add(StatusComboBox);
+        StatusComboBox.setBounds(320, 220, 131, 22);
+
+        jLabel16.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
+        jLabel16.setText("Add New Product");
+        AddProductPanel.add(jLabel16);
+        jLabel16.setBounds(200, 80, 201, 32);
+
+        addProductClear.setText("Clear");
+        addProductClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addProductClearActionPerformed(evt);
+            }
+        });
+        AddProductPanel.add(addProductClear);
+        addProductClear.setBounds(420, 410, 72, 23);
+
+        jLabel20.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel20.setText("Image Preview");
+        AddProductPanel.add(jLabel20);
+        jLabel20.setBounds(550, 140, 100, 20);
+
+        addProductBack.setText("Back");
+        addProductBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addProductBackActionPerformed(evt);
+            }
+        });
+        AddProductPanel.add(addProductBack);
+        addProductBack.setBounds(40, 40, 72, 23);
+
+        AdminSmartPanel.add(AddProductPanel, "card2");
+
+        UpdateProductPanel.setLayout(null);
+
+        jLabel10.setText("Name:");
+        UpdateProductPanel.add(jLabel10);
+        jLabel10.setBounds(200, 160, 35, 16);
+        UpdateProductPanel.add(nameField1);
+        nameField1.setBounds(310, 160, 130, 22);
+
+        CompTypeCombobox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "CPU", "GPU", "Motherboard", "RAM", "PSU" }));
+        UpdateProductPanel.add(CompTypeCombobox1);
+        CompTypeCombobox1.setBounds(310, 200, 130, 22);
+
+        jLabel11.setText("Component Type:");
+        UpdateProductPanel.add(jLabel11);
+        jLabel11.setBounds(200, 200, 96, 16);
+
+        jLabel12.setText("Status:");
+        UpdateProductPanel.add(jLabel12);
+        jLabel12.setBounds(200, 240, 50, 16);
+
+        StatusComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Available", "Out of Stock" }));
+        UpdateProductPanel.add(StatusComboBox1);
+        StatusComboBox1.setBounds(310, 240, 131, 22);
+
+        jLabel13.setText("Quantity:");
+        UpdateProductPanel.add(jLabel13);
+        jLabel13.setBounds(200, 280, 60, 16);
+        UpdateProductPanel.add(QuantityField1);
+        QuantityField1.setBounds(310, 280, 130, 22);
+
+        jLabel14.setText("Image:");
+        UpdateProductPanel.add(jLabel14);
+        jLabel14.setBounds(200, 360, 50, 16);
+        UpdateProductPanel.add(ComponentPriceField1);
+        ComponentPriceField1.setBounds(310, 320, 130, 22);
+
+        updateProductBrowse.setText("Browse");
+        updateProductBrowse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateProductBrowseActionPerformed(evt);
+            }
+        });
+        UpdateProductPanel.add(updateProductBrowse);
+        updateProductBrowse.setBounds(310, 360, 84, 23);
+
+        updateProduct_imagePreview.setBackground(new java.awt.Color(255, 255, 255));
+        updateProduct_imagePreview.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
+        updateProduct_imagePreview.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        UpdateProductPanel.add(updateProduct_imagePreview);
+        updateProduct_imagePreview.setBounds(540, 160, 200, 170);
+
+        ConfirmUpdateBtn.setText("Confirm Update");
+        ConfirmUpdateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConfirmUpdateBtnActionPerformed(evt);
+            }
+        });
+        UpdateProductPanel.add(ConfirmUpdateBtn);
+        ConfirmUpdateBtn.setBounds(310, 410, 115, 23);
+
+        jLabel18.setText("Price:");
+        UpdateProductPanel.add(jLabel18);
+        jLabel18.setBounds(200, 320, 40, 16);
+
+        jLabel1.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
+        jLabel1.setText("Update Product");
+        UpdateProductPanel.add(jLabel1);
+        jLabel1.setBounds(200, 90, 179, 32);
+
+        updateCancelBtn.setText("Cancel");
+        updateCancelBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateCancelBtnActionPerformed(evt);
+            }
+        });
+        UpdateProductPanel.add(updateCancelBtn);
+        updateCancelBtn.setBounds(460, 410, 72, 23);
+
+        jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel17.setText("Image Preview");
+        UpdateProductPanel.add(jLabel17);
+        jLabel17.setBounds(540, 130, 100, 20);
+
+        updateProductBackbtn.setText("Back");
+        updateProductBackbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateProductBackbtnActionPerformed(evt);
+            }
+        });
+        UpdateProductPanel.add(updateProductBackbtn);
+        updateProductBackbtn.setBounds(40, 40, 72, 23);
 
         AdminSmartPanel.add(UpdateProductPanel, "card4");
 
@@ -412,19 +432,14 @@ public class AdminDashboard extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(AdminSmartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 811, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(AdminSmartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(AdminSmartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(AdminSmartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -438,34 +453,20 @@ public class AdminDashboard extends javax.swing.JFrame {
         AdminSmartPanel.revalidate();
     }//GEN-LAST:event_AddProductBtnActionPerformed
 
-    private void ViewProductBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewProductBtnActionPerformed
-        // TODO add your handling code here:
-        AdminSmartPanel.removeAll();
-        AdminSmartPanel.add(ViewProductPanel);
-        AdminSmartPanel.repaint();
-        AdminSmartPanel.revalidate();
-    }//GEN-LAST:event_ViewProductBtnActionPerformed
-
     private void RemoveProdductBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveProdductBtnActionPerformed
         // TODO add your handling code here:
-        int selectedRow = AdminViewTable.getSelectedRow();
-
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this,
-                    "Please select a row to delete");
+        int viewRow = AdminViewTable.getSelectedRow();
+        if (viewRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a row to delete");
             return;
         }
 
-        PCComponent selectedComponent = PCComponent.getComponents().get(selectedRow);
+        int modelRow = AdminViewTable.convertRowIndexToModel(viewRow);
+        PCComponent comp = tableModel.getComponentAt(modelRow);
 
-        // Call controller
-        PCComponentController controller = new PCComponentController();
-        controller.deleteComponent(selectedComponent);
+        controller.deleteComponent(comp);
 
-        JOptionPane.showMessageDialog(this,
-                "Component deleted successfully");
-
-        // Refresh table
+        JOptionPane.showMessageDialog(this, "Component deleted successfully");
         loadTableData();
     }//GEN-LAST:event_RemoveProdductBtnActionPerformed
 
@@ -479,7 +480,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_AdminLogoutBtnActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void AddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddProductActionPerformed
         // TODO add your handling code here:
         boolean success = controller.addComponent(
                 nameField.getText(),
@@ -494,12 +495,12 @@ public class AdminDashboard extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this,
                     "Component added successfully");
             loadTableData();
-            clearForm();
+            clearAddProductForm();
         } else {
             JOptionPane.showMessageDialog(this,
                     "Invalid input. Please check all fields.");
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_AddProductActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
@@ -507,65 +508,69 @@ public class AdminDashboard extends javax.swing.JFrame {
         int result = fileChooser.showOpenDialog(this);
 
         if (result == JFileChooser.APPROVE_OPTION) {
-            selectedImagePath = fileChooser.getSelectedFile().getAbsolutePath();
+            File file = fileChooser.getSelectedFile();
+            selectedImagePath = file.getAbsolutePath();
+
+            setPreviewImage(jLabel8, selectedImagePath, 190, 170);
+        } else {
+            JOptionPane.showMessageDialog(this, "No image selected.");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void UpdateProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateProductActionPerformed
         // TODO add your handling code here:
-
-        int selectedRow = AdminViewTable.getSelectedRow();
-
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this,
-                    "Please select a product to update");
+        int viewRow = AdminViewTable.getSelectedRow();
+        if (viewRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a product to update");
             return;
         }
 
-        // Get actual object from Model
-        selectedComponent
-                = PCComponent.getComponents().get(selectedRow);
+        int modelRow = AdminViewTable.convertRowIndexToModel(viewRow);
+        selectedComponent = tableModel.getComponentAt(modelRow);
 
-        // Auto fill text fields
         nameField1.setText(selectedComponent.getName());
         CompTypeCombobox1.setSelectedItem(selectedComponent.getType());
         StatusComboBox1.setSelectedItem(selectedComponent.getStatus());
-        QuantityField1.setText(
-                String.valueOf(selectedComponent.getQuantity()));
-        ComponentPriceField1.setText(
-                String.valueOf(selectedComponent.getPrice()));
+        QuantityField1.setText(String.valueOf(selectedComponent.getQuantity()));
+        ComponentPriceField1.setText(String.valueOf(selectedComponent.getPrice()));
+
+        // preview current image in update panel
+        updateSelectedImagePath = selectedComponent.getImagePath();
+        setPreviewImage(updateProduct_imagePreview, updateSelectedImagePath, 210, 170);
 
         AdminSmartPanel.removeAll();
         AdminSmartPanel.add(UpdateProductPanel);
         AdminSmartPanel.repaint();
         AdminSmartPanel.revalidate();
-
-
     }//GEN-LAST:event_UpdateProductActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void ConfirmUpdateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmUpdateBtnActionPerformed
         // TODO add your handling code here:
         if (selectedComponent == null) {
-            JOptionPane.showMessageDialog(this,
-                    "No product selected");
+            JOptionPane.showMessageDialog(this, "No product selected");
             return;
         }
 
         try {
-            int quantity = Integer.parseInt(QuantityField1.getText());
-            double price = Double.parseDouble(ComponentPriceField1.getText());
+            int quantity = Integer.parseInt(QuantityField1.getText().trim());
+            double price = Double.parseDouble(ComponentPriceField1.getText().trim());
+
+            // if user selected a new image, save it; else keep old
+            if (updateSelectedImagePath != null && !updateSelectedImagePath.trim().isEmpty()) {
+                selectedComponent.setImagePath(updateSelectedImagePath);
+            }
+
             controller.updateComponent(
                     selectedComponent,
-                    nameField1.getName(),
+                    nameField1.getText().trim(),
                     CompTypeCombobox1.getSelectedItem().toString(),
                     StatusComboBox1.getSelectedItem().toString(),
-                    quantity, // int
-                    price);
-                    
-                    loadTableData();   // refresh admin table
+                    quantity,
+                    price
+            );
 
-            JOptionPane.showMessageDialog(this,
-                    "Product updated successfully");
+            JOptionPane.showMessageDialog(this, "Product updated successfully");
+            loadTableData();
 
             AdminSmartPanel.removeAll();
             AdminSmartPanel.add(ViewProductPanel);
@@ -573,10 +578,55 @@ public class AdminDashboard extends javax.swing.JFrame {
             AdminSmartPanel.revalidate();
 
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this,
-                    "Invalid quantity or price");
+            JOptionPane.showMessageDialog(this, "Invalid quantity or price");
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_ConfirmUpdateBtnActionPerformed
+
+    private void addProductBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addProductBackActionPerformed
+        // TODO add your handling code here:
+        AdminSmartPanel.removeAll();
+        AdminSmartPanel.add(ViewProductPanel);
+        AdminSmartPanel.repaint();
+        AdminSmartPanel.revalidate();
+    }//GEN-LAST:event_addProductBackActionPerformed
+
+    private void addProductClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addProductClearActionPerformed
+        // TODO add your handling code here:
+        clearAddProductForm();
+    }//GEN-LAST:event_addProductClearActionPerformed
+
+    private void updateProductBrowseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateProductBrowseActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            updateSelectedImagePath = file.getAbsolutePath();
+
+            setPreviewImage(updateProduct_imagePreview, updateSelectedImagePath, 210, 170);
+        } else {
+            JOptionPane.showMessageDialog(this, "No image selected.");
+        }
+    }//GEN-LAST:event_updateProductBrowseActionPerformed
+
+    private void updateProductBackbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateProductBackbtnActionPerformed
+        // TODO add your handling code here:
+        AdminSmartPanel.removeAll();
+        AdminSmartPanel.add(ViewProductPanel);
+        AdminSmartPanel.repaint();
+        AdminSmartPanel.revalidate();
+    }//GEN-LAST:event_updateProductBackbtnActionPerformed
+
+    private void updateCancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateCancelBtnActionPerformed
+        // TODO add your handling code here:
+        clearUpdateProductForm();
+
+        AdminSmartPanel.removeAll();
+        AdminSmartPanel.add(ViewProductPanel);
+        AdminSmartPanel.repaint();
+        AdminSmartPanel.revalidate();
+    }//GEN-LAST:event_updateCancelBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -604,6 +654,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AddProduct;
     private javax.swing.JButton AddProductBtn;
     private javax.swing.JPanel AddProductPanel;
     private javax.swing.JButton AdminLogoutBtn;
@@ -613,6 +664,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> CompTypeCombobox1;
     private javax.swing.JTextField ComponentPriceField;
     private javax.swing.JTextField ComponentPriceField1;
+    private javax.swing.JButton ConfirmUpdateBtn;
     private javax.swing.JTextField QuantityField;
     private javax.swing.JTextField QuantityField1;
     private javax.swing.JButton RemoveProdductBtn;
@@ -620,18 +672,23 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> StatusComboBox1;
     private javax.swing.JButton UpdateProduct;
     private javax.swing.JPanel UpdateProductPanel;
-    private javax.swing.JButton ViewProductBtn;
     private javax.swing.JPanel ViewProductPanel;
+    private javax.swing.JButton addProductBack;
+    private javax.swing.JButton addProductClear;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -640,38 +697,89 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField nameField;
     private javax.swing.JTextField nameField1;
+    private javax.swing.JButton updateCancelBtn;
+    private javax.swing.JButton updateProductBackbtn;
+    private javax.swing.JButton updateProductBrowse;
+    private javax.swing.JLabel updateProduct_imagePreview;
     // End of variables declaration//GEN-END:variables
- private void loadTableData() {
 
-        DefaultTableModel model = (DefaultTableModel) AdminViewTable.getModel();
-        model.setRowCount(0);
+    private void setupTableModel() {
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Name", "Component Type", "Status", "Quantity", "Price", "Image"}
+        ) {
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 5) {
+                    // JTable uses this to choose default renderer/editor for the column [web:194][web:406]
+                    return javax.swing.Icon.class;
+                }
+                return Object.class;
+            }
 
-        for (PCComponent pc : PCComponent.getComponents()) {
-            model.addRow(new Object[]{
-                pc.getName(),
-                pc.getType(),
-                pc.getStatus(),
-                pc.getQuantity(),
-                pc.getPrice(),
-                pc.getImagePath()
-            });
-        }
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        AdminViewTable.setModel(model);
     }
-    private PCComponentController controller = new PCComponentController();
-    // variable to store the selected image path
-    private String selectedImagePath = "";
 
-    private void clearForm() {
+    private void loadTableData() {
+        tableModel.setData(PCComponent.getComponents());
+    }
+
+    private void setPreviewImage(javax.swing.JLabel label, String imagePath, int fallbackW, int fallbackH) {
+        if (imagePath == null || imagePath.trim().isEmpty()) {
+            label.setIcon(null);
+            label.setText("ImagePreview");
+            return;
+        }
+
+        ImageIcon icon = new ImageIcon(imagePath);
+        Image img = icon.getImage();
+
+        int w = label.getWidth();
+        int h = label.getHeight();
+
+        if (w <= 0 || h <= 0) {
+            w = fallbackW;
+            h = fallbackH;
+        }
+
+        Image scaledImg = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+        label.setIcon(new ImageIcon(scaledImg));
+        label.setText("");
+    }
+
+    private void clearAddProductForm() {
         nameField.setText("");
-        ComponentPriceField.setText("");
+        CompTypeCombobox.setSelectedIndex(0);
         StatusComboBox.setSelectedIndex(0);
         QuantityField.setText("");
-        CompTypeCombobox.setSelectedIndex(0);
+        ComponentPriceField.setText("");
+
         selectedImagePath = "";
+        jLabel8.setIcon(null);
+        jLabel8.setText("ImagePreview");
+    }
+
+    private void clearUpdateProductForm() {
+        nameField1.setText("");
+        CompTypeCombobox1.setSelectedIndex(0);
+        StatusComboBox1.setSelectedIndex(0);
+        QuantityField1.setText("");
+        ComponentPriceField1.setText("");
+
+        updateSelectedImagePath = "";
+        updateProduct_imagePreview.setIcon(null);
+        updateProduct_imagePreview.setText("ImagePreview");
+
+        selectedComponent = null;
     }
 
 }

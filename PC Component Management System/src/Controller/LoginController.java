@@ -19,7 +19,8 @@ public class LoginController {
     private final Login View;
     
     // shared application context that holds the in-memory repository.
-    private final LoginModel.AppContext ctx = new LoginModel.AppContext();
+   private final LoginModel.AppContext ctx = LoginModel.AppContext.getInstance();
+
 
     // 
     private static final String CARD_LOGIN = "login";
