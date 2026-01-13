@@ -88,20 +88,23 @@ public class PCComponentTableModel extends AbstractTableModel {
     }
 
     private ImageIcon makeThumbnail(String imagePath) {
-        if (imagePath == null || imagePath.trim().isEmpty()) {
+        if (imagePath == null) {
+            return null;
+        }
+        if (imagePath.trim().length() == 0) {
             return null;
         }
 
         ImageIcon icon = null;
 
-        // If you saved "/images/x.png" for predefined components
+        // resource path: "/images/xxx.png"
         if (imagePath.startsWith("/")) {
             java.net.URL url = getClass().getResource(imagePath);
             if (url != null) {
                 icon = new ImageIcon(url);
             }
         } else {
-            // user browsed file => absolute path
+            // file system path
             icon = new ImageIcon(imagePath);
         }
 
@@ -109,8 +112,9 @@ public class PCComponentTableModel extends AbstractTableModel {
             return null;
         }
 
+        // Make it same as cart (square thumbnail)
         Image img = icon.getImage();
-        Image scaled = img.getScaledInstance(thumbW, thumbH, Image.SCALE_SMOOTH);
+        Image scaled = img.getScaledInstance(120, 120, Image.SCALE_SMOOTH);
         return new ImageIcon(scaled);
     }
 

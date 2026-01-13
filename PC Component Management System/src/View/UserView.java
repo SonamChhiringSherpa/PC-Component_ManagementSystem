@@ -4,6 +4,7 @@
  */
 package View;
 
+import Controller.CartController;
 import Model.CartItem;
 import Model.CartStack;
 import Controller.PCComponentController;
@@ -11,7 +12,11 @@ import Model.PCComponent;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import Model.PCComponentTableModel;
+import java.awt.Image;
+import java.net.URL;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -26,6 +31,8 @@ import javax.swing.table.TableRowSorter;
 public class UserView extends javax.swing.JFrame {
 
     private final CartStack cartStack = new CartStack();
+    private final CartController cartController = new CartController(cartStack);
+
     private final PCComponentTableModel tableModel = new PCComponentTableModel(120, 80);
     private final TableRowSorter<PCComponentTableModel> sorter = new TableRowSorter<>(tableModel);
 
@@ -43,6 +50,9 @@ public class UserView extends javax.swing.JFrame {
         componentTable.setRowSorter(sorter);   // sorting/filtering support [web:418]
         componentTable.setRowHeight(130);
 
+        // cart table (image + row height)
+        setupCartTableModel();
+        jTable1.setRowHeight(130);
         PCComponent.initDummyData();
         refreshTable();
 
@@ -87,6 +97,7 @@ public class UserView extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         updateCartQuantity = new javax.swing.JButton();
+        placeOrder = new javax.swing.JButton();
         HomePanel = new javax.swing.JPanel();
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -355,13 +366,13 @@ public class UserView extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Name", "Component Type", "Quantity", "Unit Price", "Total"
+                "Image", "Name", "Component Type", "Quantity", "Unit Price", "Total"
             }
         ));
         jScrollPane2.setViewportView(jTable1);
@@ -376,6 +387,8 @@ public class UserView extends javax.swing.JFrame {
             }
         });
 
+        placeOrder.setText("Place Order");
+
         javax.swing.GroupLayout CartPanelLayout = new javax.swing.GroupLayout(CartPanel);
         CartPanel.setLayout(CartPanelLayout);
         CartPanelLayout.setHorizontalGroup(
@@ -387,7 +400,10 @@ public class UserView extends javax.swing.JFrame {
                     .addGroup(CartPanelLayout.createSequentialGroup()
                         .addGroup(CartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
-                            .addComponent(updateCartQuantity))
+                            .addGroup(CartPanelLayout.createSequentialGroup()
+                                .addComponent(updateCartQuantity)
+                                .addGap(28, 28, 28)
+                                .addComponent(placeOrder)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -399,7 +415,9 @@ public class UserView extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32)
-                .addComponent(updateCartQuantity)
+                .addGroup(CartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(updateCartQuantity)
+                    .addComponent(placeOrder))
                 .addContainerGap(201, Short.MAX_VALUE))
         );
 
@@ -525,162 +543,116 @@ public class UserView extends javax.swing.JFrame {
     private void addToCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addToCartActionPerformed
         // TODO add your handling code here:
         int viewRow = componentTable.getSelectedRow();
-        if (viewRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a product first.");
-            return;
-        }
+    if (viewRow == -1) {
+        JOptionPane.showMessageDialog(this, "Please select a product first.");
+        return;
+    }
 
-        // because you use TableRowSorter, convert view row -> model row [web:418]
-        int modelRow = componentTable.convertRowIndexToModel(viewRow);
+    int modelRow = componentTable.convertRowIndexToModel(viewRow);
+    PCComponent selected = tableModel.getComponentAt(modelRow);
 
-        // Get selected PCComponent from the same list used by your table model
-        // IMPORTANT: this requires PCComponentTableModel.getComponentAt(int)
-        PCComponent selected = tableModel.getComponentAt(modelRow);
+    if (selected == null) {
+        JOptionPane.showMessageDialog(this, "Invalid selection.");
+        return;
+    }
 
-        if (selected == null) {
-            JOptionPane.showMessageDialog(this, "Invalid selection.");
-            return;
-        }
+    // dialog (view job)
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        // Build dialog UI: description + quantity spinner
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    String desc =
+            "Name: " + selected.getName() + "\n"
+            + "Type: " + selected.getType() + "\n"
+            + "Status: " + selected.getStatus() + "\n"
+            + "Available Qty: " + selected.getQuantity() + "\n"
+            + "Price: " + selected.getPrice();
 
-        String desc
-                = "Name: " + selected.getName() + "\n"
-                + "Type: " + selected.getType() + "\n"
-                + "Status: " + selected.getStatus() + "\n"
-                + "Available Qty: " + selected.getQuantity() + "\n"
-                + "Price: " + selected.getPrice();
+    panel.add(new JLabel("<html>" + desc.replace("\n", "<br>") + "</html>"));
+    panel.add(new JLabel(" "));
 
-        JLabel descLabel = new JLabel("<html>" + desc.replace("\n", "<br>") + "</html>");
-        panel.add(descLabel);
+    int maxQty = selected.getQuantity();
+    if (maxQty <= 0) {
+        JOptionPane.showMessageDialog(this, "This product is out of stock.");
+        return;
+    }
 
-        panel.add(new JLabel(" ")); // spacer
+    SpinnerNumberModel model = new SpinnerNumberModel(1, 1, maxQty, 1);
+    JSpinner spinner = new JSpinner(model);
 
-        int maxQty = selected.getQuantity();
-        if (maxQty <= 0) {
-            JOptionPane.showMessageDialog(this, "This product is out of stock.");
-            return;
-        }
+    JPanel qtyPanel = new JPanel();
+    qtyPanel.add(new JLabel("Quantity: "));
+    qtyPanel.add(spinner);
+    panel.add(qtyPanel);
 
-        SpinnerNumberModel model = new SpinnerNumberModel(1, 1, maxQty, 1);
-        JSpinner spinner = new JSpinner(model);
+    int option = JOptionPane.showConfirmDialog(
+            this,
+            panel,
+            "Add to Cart",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.INFORMATION_MESSAGE
+    );
 
-        JPanel qtyPanel = new JPanel();
-        qtyPanel.add(new JLabel("Quantity: "));
-        qtyPanel.add(spinner);
+    if (option != JOptionPane.OK_OPTION) return;
 
-        panel.add(qtyPanel);
+    int qty = ((Integer) spinner.getValue()).intValue();
 
-        int option = JOptionPane.showConfirmDialog(
-                this,
-                panel,
-                "Add to Cart",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.INFORMATION_MESSAGE
-        );
-
-        if (option != JOptionPane.OK_OPTION) {
-            return; // cancelled
-        }
-
-        int qty = ((Integer) spinner.getValue()).intValue();
-
-        int remaining = selected.getQuantity() - qty;
-        selected.setQuantity(remaining);   // requires setQuantity(int) in PCComponent
-        refreshTable();                    // reload main table model
-        refreshCartTable();                // reload cart table
-
-        // update status based on remaining qty
-        if (selected.getQuantity() <= 0) {
-            selected.setStatus("Out of Stock");
-            selected.setQuantity(0); // safety: avoid negative values
-        } else {
-            selected.setStatus("Available");
-        }
-
-        // Push into custom stack (LIFO)
-        cartStack.push(new CartItem(selected, qty));
-
-        // Update cart table
+    try {
+        cartController.addToCart(selected, qty);   // controller updates stock/status + pushes to stack
+        refreshTable();
         refreshCartTable();
+    } catch (IllegalArgumentException ex) {
+        JOptionPane.showMessageDialog(this, ex.getMessage());
+    }
+
+
     }//GEN-LAST:event_addToCartActionPerformed
 
     private void updateCartQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateCartQuantityActionPerformed
         // TODO add your handling code here:
-        int cartRow = jTable1.getSelectedRow();
-        if (cartRow == -1) {
-            JOptionPane.showMessageDialog(this, "Select an item in the cart first.");
-            return;
-        }
+        
+   
+    int cartRow = jTable1.getSelectedRow();
+    if (cartRow == -1) {
+        JOptionPane.showMessageDialog(this, "Select an item in the cart first.");
+        return;
+    }
 
-        // Our refreshCartTable() displays cartStack.toList() in order top->bottom,
-        // so cartRow matches stack index.
-        CartItem cartItem = cartStack.getAt(cartRow);
-        if (cartItem == null) {
-            JOptionPane.showMessageDialog(this, "Invalid cart selection.");
-            return;
-        }
+    CartItem item = cartStack.getAt(cartRow);
+    if (item == null) {
+        JOptionPane.showMessageDialog(this, "Invalid cart selection.");
+        return;
+    }
 
-        PCComponent pc = cartItem.getComponent();
+    PCComponent pc = item.getComponent();
+    int oldQty = item.getQuantity();
 
-        // Compute "available" stock for this product:
-        // currentStock is what remains in inventory AFTER earlier adds.
-        // If user already has X in cart, they can change up to currentStock + X.
-        int currentStock = pc.getQuantity();
-        int oldQty = cartItem.getQuantity();
-        int maxAllowed = currentStock + oldQty;
+    int maxAllowed = pc.getQuantity() + oldQty;
+    if (maxAllowed <= 0) {
+        JOptionPane.showMessageDialog(this, "This product is out of stock.");
+        return;
+    }
 
-        if (maxAllowed <= 0) {
-            JOptionPane.showMessageDialog(this, "This product is out of stock.");
-            return;
-        }
+    JSpinner spinner = new JSpinner(new SpinnerNumberModel(oldQty, 1, maxAllowed, 1));
 
-        javax.swing.JSpinner spinner = new javax.swing.JSpinner(
-                new javax.swing.SpinnerNumberModel(oldQty, 1, maxAllowed, 1)
-        );
+    int option = JOptionPane.showConfirmDialog(
+            this,
+            spinner,
+            "Update quantity (max " + maxAllowed + ")",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+    );
 
-        int option = JOptionPane.showConfirmDialog(
-                this,
-                spinner,
-                "Update quantity (max " + maxAllowed + ")",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE
-        );
+    if (option != JOptionPane.OK_OPTION) return;
 
-        if (option != JOptionPane.OK_OPTION) {
-            return;
-        }
+    int newQty = ((Integer) spinner.getValue()).intValue();
 
-        int newQty = ((Integer) spinner.getValue()).intValue();
-        int diff = newQty - oldQty;  // + means increase cart, - means decrease cart
-
-        // Update inventory based on the difference
-        // If diff > 0: user wants MORE in cart -> reduce stock
-        // If diff < 0: user wants LESS in cart -> return stock back
-        int newStock = currentStock - diff;
-        if (newStock < 0) {
-            JOptionPane.showMessageDialog(this, "Not enough stock available.");
-            return;
-        }
-
-        pc.setQuantity(newStock);
-
-        // status update rule
-        if (pc.getQuantity() <= 0) {
-            pc.setQuantity(0);
-            pc.setStatus("Out of Stock");
-        } else {
-            pc.setStatus("Available");
-        }
-
-        // Update the cart stack node
-        cartStack.updateQuantityAt(cartRow, newQty);
-
-        // Refresh both tables
-        refreshTable();      // main component table
-        refreshCartTable();  // cart table
+    try {
+        cartController.updateCartQuantityAt(cartRow, newQty);
+        refreshTable();
+        refreshCartTable();
+    } catch (IllegalArgumentException ex) {
+        JOptionPane.showMessageDialog(this, ex.getMessage());
+    }
     }//GEN-LAST:event_updateCartQuantityActionPerformed
 
     /**
@@ -708,36 +680,80 @@ public class UserView extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new UserView().setVisible(true));
     }
     private PCComponentController controller = new PCComponentController();
-
-    private void refreshTable() {
-        tableModel.setData(PCComponent.getComponents());
-    }
-
-    private void refreshCartTable() {
-
-        DefaultTableModel cartModel = (DefaultTableModel) jTable1.getModel();
-
-        // If your cart table currently has Title1..Title4, replace its model once:
-        // (do this only once if you want; safe to do every time too)
-        cartModel.setColumnIdentifiers(new Object[]{"Name", "Type", "Qty", "Unit Price", "Total"});
-
-        cartModel.setRowCount(0);
-
-        java.util.List<CartItem> items = cartStack.toList();
-
-        for (int i = 0; i < items.size(); i++) {
-            CartItem ci = items.get(i);
-            PCComponent pc = ci.getComponent();
-
-            cartModel.addRow(new Object[]{
-                pc.getName(),
-                pc.getType(),
-                ci.getQuantity(),
-                pc.getPrice(),
-                ci.getTotalPrice()
-            });
+    
+    private void setupCartTableModel() {
+    jTable1.setModel(new DefaultTableModel(
+            new Object[][]{},
+            new String[]{"Image", "Name", "Component Type", "Quantity", "Unit Price", "Total"}
+    ) {
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            if (columnIndex == 0) {
+                return Icon.class; // Image column [web:175][web:406]
+            }
+            return Object.class;
         }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    });
+}
+
+
+  private void refreshTable() {
+    tableModel.setData(PCComponent.getComponents());
+}
+
+
+   private void refreshCartTable() {
+
+    DefaultTableModel cartModel = (DefaultTableModel) jTable1.getModel();
+    cartModel.setRowCount(0);
+
+    java.util.List<CartItem> items = cartStack.toList();
+
+    for (int i = 0; i < items.size(); i++) {
+        CartItem ci = items.get(i);
+        PCComponent pc = ci.getComponent();
+
+        ImageIcon cartThumb = makeCartThumbnail(pc.getImagePath(), 120, 120);
+
+        cartModel.addRow(new Object[]{
+            cartThumb,
+            pc.getName(),
+            pc.getType(),
+            ci.getQuantity(),
+            pc.getPrice(),
+            ci.getTotalPrice()
+        });
     }
+}
+   private ImageIcon makeCartThumbnail(String imagePath, int w, int h) {
+    if (imagePath == null || imagePath.trim().isEmpty()) return null;
+
+    ImageIcon icon = null;
+
+    // resource path (predefined): "/images/x.png"
+    if (imagePath.startsWith("/")) {
+        URL url = getClass().getResource(imagePath);
+        if (url != null) {
+            icon = new ImageIcon(url);
+        }
+    } else {
+        // file path (chosen by user)
+        icon = new ImageIcon(imagePath);
+    }
+
+    if (icon == null) return null;
+
+    Image img = icon.getImage();
+    Image scaled = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+    return new ImageIcon(scaled);
+}
+
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -767,6 +783,7 @@ public class UserView extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JButton placeOrder;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTextField searchField;
     private javax.swing.JButton sortByName;
