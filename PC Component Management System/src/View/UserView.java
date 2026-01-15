@@ -23,6 +23,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import Controller.OrderController;
 
 /**
  *
@@ -77,11 +78,11 @@ public class UserView extends javax.swing.JFrame {
         LogOutButton = new javax.swing.JButton();
         NavigationPanel = new javax.swing.JPanel();
         Home = new javax.swing.JButton();
-        AboutUs = new javax.swing.JButton();
         Components = new javax.swing.JButton();
         Cart = new javax.swing.JButton();
+        Cart1 = new javax.swing.JButton();
         SmartPanel = new javax.swing.JPanel();
-        AboutUsPanel = new javax.swing.JPanel();
+        HomePanel = new javax.swing.JPanel();
         ComponentsPanel = new javax.swing.JPanel();
         FilterPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -102,7 +103,7 @@ public class UserView extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         updateCartQuantity = new javax.swing.JButton();
         placeOrder = new javax.swing.JButton();
-        HomePanel = new javax.swing.JPanel();
+        orderHistoryPanel = new javax.swing.JPanel();
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -150,13 +151,6 @@ public class UserView extends javax.swing.JFrame {
             }
         });
 
-        AboutUs.setText("AboutUs");
-        AboutUs.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AboutUsActionPerformed(evt);
-            }
-        });
-
         Components.setText("Components");
         Components.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -171,45 +165,52 @@ public class UserView extends javax.swing.JFrame {
             }
         });
 
+        Cart1.setText("Order History");
+        Cart1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Cart1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout NavigationPanelLayout = new javax.swing.GroupLayout(NavigationPanel);
         NavigationPanel.setLayout(NavigationPanelLayout);
         NavigationPanelLayout.setHorizontalGroup(
             NavigationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(Home, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(AboutUs, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
             .addComponent(Components, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
             .addComponent(Cart, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+            .addComponent(Cart1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
         );
         NavigationPanelLayout.setVerticalGroup(
             NavigationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(NavigationPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(Home, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(AboutUs, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Components, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Cart, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(451, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(Cart1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(480, Short.MAX_VALUE))
         );
 
         SmartPanel.setBackground(new java.awt.Color(255, 255, 255));
         SmartPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         SmartPanel.setLayout(new java.awt.CardLayout());
 
-        javax.swing.GroupLayout AboutUsPanelLayout = new javax.swing.GroupLayout(AboutUsPanel);
-        AboutUsPanel.setLayout(AboutUsPanelLayout);
-        AboutUsPanelLayout.setHorizontalGroup(
-            AboutUsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout HomePanelLayout = new javax.swing.GroupLayout(HomePanel);
+        HomePanel.setLayout(HomePanelLayout);
+        HomePanelLayout.setHorizontalGroup(
+            HomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 772, Short.MAX_VALUE)
         );
-        AboutUsPanelLayout.setVerticalGroup(
-            AboutUsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 619, Short.MAX_VALUE)
+        HomePanelLayout.setVerticalGroup(
+            HomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 660, Short.MAX_VALUE)
         );
 
-        SmartPanel.add(AboutUsPanel, "card3");
+        SmartPanel.add(HomePanel, "card2");
 
         FilterPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -330,7 +331,7 @@ public class UserView extends javax.swing.JFrame {
         );
         ItemPanelLayout.setVerticalGroup(
             ItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+            .addComponent(jScrollPane1)
         );
 
         addToCart.setText("Add to Cart");
@@ -411,7 +412,7 @@ public class UserView extends javax.swing.JFrame {
                             .addComponent(jLabel4)
                             .addGroup(CartPanelLayout.createSequentialGroup()
                                 .addComponent(updateCartQuantity)
-                                .addGap(28, 28, 28)
+                                .addGap(18, 18, 18)
                                 .addComponent(placeOrder)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -423,27 +424,27 @@ public class UserView extends javax.swing.JFrame {
                 .addComponent(jLabel4)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
+                .addGap(18, 18, 18)
                 .addGroup(CartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(updateCartQuantity)
                     .addComponent(placeOrder))
-                .addContainerGap(201, Short.MAX_VALUE))
+                .addContainerGap(256, Short.MAX_VALUE))
         );
 
         SmartPanel.add(CartPanel, "card5");
 
-        javax.swing.GroupLayout HomePanelLayout = new javax.swing.GroupLayout(HomePanel);
-        HomePanel.setLayout(HomePanelLayout);
-        HomePanelLayout.setHorizontalGroup(
-            HomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout orderHistoryPanelLayout = new javax.swing.GroupLayout(orderHistoryPanel);
+        orderHistoryPanel.setLayout(orderHistoryPanelLayout);
+        orderHistoryPanelLayout.setHorizontalGroup(
+            orderHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 772, Short.MAX_VALUE)
         );
-        HomePanelLayout.setVerticalGroup(
-            HomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 619, Short.MAX_VALUE)
+        orderHistoryPanelLayout.setVerticalGroup(
+            orderHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 660, Short.MAX_VALUE)
         );
 
-        SmartPanel.add(HomePanel, "card2");
+        SmartPanel.add(orderHistoryPanel, "card5");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -486,14 +487,6 @@ public class UserView extends javax.swing.JFrame {
         SmartPanel.repaint();
         SmartPanel.revalidate();
     }//GEN-LAST:event_HomeActionPerformed
-
-    private void AboutUsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AboutUsActionPerformed
-        // TODO add your handling code here:
-        SmartPanel.removeAll();
-        SmartPanel.add(AboutUsPanel);
-        SmartPanel.repaint();
-        SmartPanel.revalidate();
-    }//GEN-LAST:event_AboutUsActionPerformed
 
     private void LogOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutButtonActionPerformed
 
@@ -684,6 +677,10 @@ public class UserView extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_placeOrderActionPerformed
 
+    private void Cart1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Cart1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Cart1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -706,7 +703,7 @@ public class UserView extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new UserView().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new UserView("user").setVisible(true));
     }
     private PCComponentController controller = new PCComponentController();
 
@@ -787,9 +784,8 @@ public class UserView extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton AboutUs;
-    private javax.swing.JPanel AboutUsPanel;
     private javax.swing.JButton Cart;
+    private javax.swing.JButton Cart1;
     private javax.swing.JPanel CartPanel;
     private javax.swing.JButton Components;
     private javax.swing.JPanel ComponentsPanel;
@@ -813,6 +809,7 @@ public class UserView extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JPanel orderHistoryPanel;
     private javax.swing.JButton placeOrder;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTextField searchField;

@@ -4,6 +4,7 @@
  */
 package View;
 
+import Controller.AdminHistoryController;
 import Controller.PCComponentController;
 import Model.PCComponent;
 import java.awt.Image;
@@ -15,12 +16,16 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import Model.PCComponentTableModel;
 import javax.swing.table.TableRowSorter;
+import Controller.AdminOrderController;
+import Model.Order;
 
 /**
  *
  * @author sonamchhiringsherpa
  */
 public class AdminDashboard extends javax.swing.JFrame {
+
+    private final AdminOrderController adminOrderController = new AdminOrderController();
 
     private final PCComponentTableModel tableModel = new PCComponentTableModel(120, 80);
     private final TableRowSorter<PCComponentTableModel> sorter = new TableRowSorter<>(tableModel);
@@ -113,6 +118,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         OrderPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         OrderTable = new javax.swing.JTable();
+        viewItems = new javax.swing.JButton();
         ViewOrderBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -444,13 +450,17 @@ public class AdminDashboard extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(OrderTable);
 
+        viewItems.setText("View Items");
+
         javax.swing.GroupLayout OrderPanelLayout = new javax.swing.GroupLayout(OrderPanel);
         OrderPanel.setLayout(OrderPanelLayout);
         OrderPanelLayout.setHorizontalGroup(
             OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(OrderPanelLayout.createSequentialGroup()
                 .addGap(146, 146, 146)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 696, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(viewItems)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 696, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(148, Short.MAX_VALUE))
         );
         OrderPanelLayout.setVerticalGroup(
@@ -458,7 +468,9 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGroup(OrderPanelLayout.createSequentialGroup()
                 .addGap(72, 72, 72)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(317, Short.MAX_VALUE))
+                .addGap(36, 36, 36)
+                .addComponent(viewItems)
+                .addContainerGap(258, Short.MAX_VALUE))
         );
 
         AdminSmartPanel.add(OrderPanel, "card5");
@@ -513,6 +525,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         int modelRow = AdminViewTable.convertRowIndexToModel(viewRow);
         PCComponent comp = tableModel.getComponentAt(modelRow);
 
+        AdminHistoryController.recordDeletedProduct(comp);
         controller.deleteComponent(comp);
 
         JOptionPane.showMessageDialog(this, "Component deleted successfully");
@@ -681,10 +694,12 @@ public class AdminDashboard extends javax.swing.JFrame {
 
     private void ViewOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewOrderBtnActionPerformed
         // TODO add your handling code here:
-         AdminSmartPanel.removeAll();
+        AdminSmartPanel.removeAll();
         AdminSmartPanel.add(OrderPanel);
+        refreshOrdersTable();
         AdminSmartPanel.repaint();
         AdminSmartPanel.revalidate();
+
     }//GEN-LAST:event_ViewOrderBtnActionPerformed
 
     /**
@@ -767,6 +782,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JButton updateProductBackbtn;
     private javax.swing.JButton updateProductBrowse;
     private javax.swing.JLabel updateProduct_imagePreview;
+    private javax.swing.JButton viewItems;
     // End of variables declaration//GEN-END:variables
 
     private void setupTableModel() {
@@ -843,6 +859,16 @@ public class AdminDashboard extends javax.swing.JFrame {
         updateProduct_imagePreview.setText("ImagePreview");
 
         selectedComponent = null;
+    }
+
+    private void refreshOrdersTable() {
+        DefaultTableModel m = (DefaultTableModel) OrderTable.getModel();
+        m.setRowCount(0);
+
+        java.util.List<Order> orders = adminOrderController.getAllOrdersSnapshot();
+        for (Order o : orders) {
+            m.addRow(new Object[]{o.getOrderId(), o.getUsername(), o.getOrderDateTime(), o.getTotal()});
+        }
     }
 
 }

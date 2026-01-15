@@ -12,12 +12,12 @@ public class AppStore {
     private static final AppStore INSTANCE = new AppStore();
 
     private final OrderQueue orders = new OrderQueue();
-    private final DeletedProductStack deletedProducts = new DeletedProductStack();
+    private final DeleteProductStack deletedProducts = new DeleteProductStack();
 
     private AppStore() {}
 
     public static AppStore getInstance() { return INSTANCE; }
 
     public OrderQueue getOrders() { return orders; }
-    public DeletedProductStack getDeletedProducts() { return deletedProducts; }
+    public DeleteProductStack getDeletedProducts() { return deletedProducts; }
 }
