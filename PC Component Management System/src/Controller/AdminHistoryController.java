@@ -24,3 +24,4 @@ public class AdminHistoryController {
     public PCComponent restoreLastDeleted() {
         return store.getDeletedProducts().pop();
 }
+}

@@ -23,6 +23,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import Controller.OrderController;
 
 /**
  *
@@ -706,7 +707,7 @@ public class UserView extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new UserView().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new UserView("user").setVisible(true));
     }
     private PCComponentController controller = new PCComponentController();
 
