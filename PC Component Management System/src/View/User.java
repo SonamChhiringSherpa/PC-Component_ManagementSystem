@@ -25,7 +25,7 @@ public class User extends javax.swing.JFrame {
     private CartTableModel cartModel; // created after controller cart exists
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(User.class.getName());
 
-    private final Model.UserOrderTableModel orderModel = new Model.UserOrderTableModel();
+    private final Model.UserOrderTableModel userOrderModel = new Model.UserOrderTableModel();
 
     private final Model.OrderDetailTableModel orderDetailModel = new Model.OrderDetailTableModel(80, 80);
 
@@ -34,7 +34,7 @@ public class User extends javax.swing.JFrame {
      */
     public User() {
         initComponents();
-        OrderTable.setModel(orderModel);         // Orders table (left)
+        OrderTable.setModel(userOrderModel);         // Orders table (left)
         ProductTable1.setModel(orderDetailModel); // Order Detail table (right)
         // Order Detail table (right side) sizing
         ProductTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
@@ -83,7 +83,6 @@ public class User extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         LogoutBtn = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        HomePanel = new javax.swing.JPanel();
         ProductPanel = new javax.swing.JPanel();
         FilterPanel = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -118,7 +117,7 @@ public class User extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Kannada Sangam MN", 1, 36)); // NOI18N
         jLabel2.setText("PC Hardware Vault");
         jPanel1.add(jLabel2);
-        jLabel2.setBounds(60, 30, 590, 47);
+        jLabel2.setBounds(60, 30, 590, 59);
 
         LogoutBtn.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         LogoutBtn.setText("Logout");
@@ -131,21 +130,11 @@ public class User extends javax.swing.JFrame {
         LogoutBtn.setBounds(1160, 30, 90, 50);
 
         jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
-
-        HomePanel.setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout HomePanelLayout = new javax.swing.GroupLayout(HomePanel);
-        HomePanel.setLayout(HomePanelLayout);
-        HomePanelLayout.setHorizontalGroup(
-            HomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1325, Short.MAX_VALUE)
-        );
-        HomePanelLayout.setVerticalGroup(
-            HomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 715, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Home", HomePanel);
+        jTabbedPane1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jTabbedPane1StateChanged(evt);
+            }
+        });
 
         ProductPanel.setBackground(new java.awt.Color(255, 255, 255));
         ProductPanel.setLayout(null);
@@ -243,7 +232,7 @@ public class User extends javax.swing.JFrame {
         );
 
         ProductPanel.add(FilterPanel);
-        FilterPanel.setBounds(20, 10, 1040, 92);
+        FilterPanel.setBounds(20, 10, 1040, 93);
 
         addToCart.setText("Add to Cart");
         addToCart.addActionListener(new java.awt.event.ActionListener() {
@@ -358,12 +347,12 @@ public class User extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel1.setText("Order Detial");
         OrderPanel.add(jLabel1);
-        jLabel1.setBounds(710, 20, 90, 19);
+        jLabel1.setBounds(710, 20, 90, 18);
 
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel5.setText("Orders");
         OrderPanel.add(jLabel5);
-        jLabel5.setBounds(20, 20, 60, 19);
+        jLabel5.setBounds(20, 20, 60, 18);
 
         jTabbedPane1.addTab("Orders", OrderPanel);
 
@@ -371,15 +360,18 @@ public class User extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1325, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jTabbedPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 744, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -561,7 +553,7 @@ public class User extends javax.swing.JFrame {
 
         int modelRow = OrderTable.convertRowIndexToModel(viewRow);
 
-        Model.Order o = orderModel.getOrderAtRow(modelRow);
+        Model.Order o = userOrderModel.getOrderAtRow(modelRow);
         if (o == null) {
             return;
         }
@@ -604,7 +596,7 @@ public class User extends javax.swing.JFrame {
         javax.swing.JOptionPane.showMessageDialog(this, msg);
 
         // Refresh tables
-        orderModel.refresh();
+        userOrderModel.refresh();
         cartModel.refresh();             // cart cleared
         orderDetailModel.setItems(null); // clear right table until user selects an order
     }//GEN-LAST:event_OrderBtn1ActionPerformed
@@ -614,6 +606,14 @@ public class User extends javax.swing.JFrame {
         this.dispose();
         new View.Login().setVisible(true);
     }//GEN-LAST:event_LogoutBtnActionPerformed
+
+    private void jTabbedPane1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1StateChanged
+        int index = jTabbedPane1.getSelectedIndex();
+        String title = jTabbedPane1.getTitleAt(index);
+        if ("Orders".equals(title)) {
+            userOrderModel.refresh(); // inside, call fireTableDataChanged()
+        }
+    }//GEN-LAST:event_jTabbedPane1StateChanged
 
     /**
      * @param args the command line arguments
@@ -645,7 +645,6 @@ public class User extends javax.swing.JFrame {
     private javax.swing.JPanel CartPanel;
     private javax.swing.JTable CartTable;
     private javax.swing.JPanel FilterPanel;
-    private javax.swing.JPanel HomePanel;
     private javax.swing.JButton LogoutBtn;
     private javax.swing.JButton OrderBtn1;
     private javax.swing.JPanel OrderPanel;

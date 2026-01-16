@@ -63,4 +63,29 @@ public class OrderArrayQueue {
         int realIndex = (front + index) % data.length;
         return data[realIndex];
     }
+    public static void removeAt(int index) {
+    if (index < 0 || index >= size) return;
+
+    // compute real index in circular buffer
+    int realIndex = (front + index) % data.length;
+
+    // shift elements between realIndex and rear-1 one step left in circular fashion
+    for (int i = realIndex; i != rear; i = (i + 1) % data.length) {
+        int next = (i + 1) % data.length;
+        data[i] = data[next];
+        if (next == rear) {
+            break;
+        }
+    }
+
+    // clear last element and update rear/size
+    if (rear == 0) {
+        rear = data.length - 1;
+    } else {
+        rear = rear - 1;
+    }
+    data[rear] = null;
+    size--;
+}
+
 }

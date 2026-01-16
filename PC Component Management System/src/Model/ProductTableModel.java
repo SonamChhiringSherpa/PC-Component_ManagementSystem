@@ -3,16 +3,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Model;
+
 import java.awt.Image;
 import java.util.LinkedList;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
+
 /**
  *
  * @author user
  */
-public class ProductTableModel extends AbstractTableModel{
+public class ProductTableModel extends AbstractTableModel {
 
     private final String[] cols = {"Name", "Component Type", "Status", "Quantity", "Price", "Image"};
     private LinkedList<PCComponent> data = new LinkedList<PCComponent>();
@@ -73,51 +75,50 @@ public class ProductTableModel extends AbstractTableModel{
     }
 
     @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        PCComponent pc = data.get(rowIndex);
-
-        if (columnIndex == 0) {
-            return pc.getName();
+    public Object getValueAt(int row, int col) {
+        PCComponent p = data.get(row);   // use data, not list
+        switch (col) {
+            case 0:
+                return p.getName();
+            case 1:
+                return p.getType();
+            case 2:
+                return p.getStatus();
+            case 3:
+                return p.getQuantity();
+            case 4:
+                return p.getPrice();
+            case 5:
+                return makeThumbnail(p.getImagePath());
+            default:
+                return null;
         }
-        if (columnIndex == 1) {
-            return pc.getType();
-        }
-        if (columnIndex == 2) {
-            return pc.getStatus();
-        }
-        if (columnIndex == 3) {
-            return pc.getQuantity();
-        }
-        if (columnIndex == 4) {
-            return pc.getPrice();
-        }
-        if (columnIndex == 5) {
-            return makeThumbnail(pc.getImagePath());
-        }
-        return null;
     }
 
     private ImageIcon makeThumbnail(String path) {
-         if (path == null || path.trim().isEmpty()) return null;
-
-    ImageIcon icon = null;
-
-    // If it starts with "/", treat as classpath resource (src folder)
-    if (path.startsWith("/")) {
-        java.net.URL url = getClass().getResource(path);
-        if (url != null) {
-            icon = new ImageIcon(url);
-        } else {
-            // resource not found -> return null (no image)
+        if (path == null || path.trim().isEmpty()) {
             return null;
         }
-    } else {
-        // Otherwise treat as file system path (e.g., "images/cpu1.png")
-        icon = new ImageIcon(path);
+
+        ImageIcon icon = null;
+
+        // 1) Try as real file path (for products added via Browse)
+        java.io.File f = new java.io.File(path);
+        if (f.exists() && f.isFile()) {
+            icon = new ImageIcon(path);
+        } else {
+            // 2) Try as classpath resource (for dummy data like "/Image/RTX_3060.jpg")
+            java.net.URL url = getClass().getResource(path);
+            if (url == null) {
+                System.err.println("ProductTableModel image not found: " + path);
+                return null;
+            }
+            icon = new ImageIcon(url);
+        }
+
+        Image img = icon.getImage();
+        Image scaled = img.getScaledInstance(thumbW, thumbH, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaled);
     }
 
-    Image img = icon.getImage();
-    Image scaled = img.getScaledInstance(thumbW, thumbH, Image.SCALE_SMOOTH);
-    return new ImageIcon(scaled);
-    }
 }

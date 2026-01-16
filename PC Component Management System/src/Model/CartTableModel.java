@@ -15,33 +15,42 @@ import javax.swing.table.AbstractTableModel;
  */
 public class CartTableModel extends AbstractTableModel {
 
-    private final String[] cols = {"Image", "Name", "Qty", "Price", "Total"};
+  private final String[] cols = {"Image", "Name", "Qty", "Price", "Total"};
     private CartStack cart;
-    private int thumbW;
-    private int thumbH;
+    private final int thumbW;
+    private final int thumbH;
 
-    public CartTableModel(CartStack cart, int thumbW, int thumbH) {
-        this.cart = cart;
+    public CartTableModel(Model.CartStack cart, int thumbW, int thumbH) {
+        this.cart = cart;          
         this.thumbW = thumbW;
         this.thumbH = thumbH;
+    }
+
+    public void setCart(CartStack cart) {
+       this.cart = cart;          
+        fireTableDataChanged();
+    }
+    
+    @Override
+    public int getRowCount() {
+        return (cart == null) ? 0 : cart.size();
     }
 
     public void refresh() {
         fireTableDataChanged(); // refresh table when cart changes [web:50]
     }
 
-    public int getRowCount() {
-        return cart.size();
-    }
-
+    @Override
     public int getColumnCount() {
         return cols.length;
     }
 
+    @Override
     public String getColumnName(int col) {
         return cols[col];
     }
 
+    @Override
     public Class<?> getColumnClass(int col) {
         if (col == 0) {
             return Icon.class;      // show image icon [web:52]
@@ -58,11 +67,17 @@ public class CartTableModel extends AbstractTableModel {
         return String.class;                  // name
     }
 
+    @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return false;
     }
 
+    @Override
     public Object getValueAt(int row, int col) {
+        if (cart == null) {
+            return null;
+        }
+
         CartItem item = cart.getAt(row);
         if (item == null) {
             return null;

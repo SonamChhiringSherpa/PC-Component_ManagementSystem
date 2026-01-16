@@ -19,6 +19,16 @@ public class Inventory {
     // One shared list for the whole program (Admin + User).
     private static final LinkedList<PCComponent> components = new LinkedList<>();
 
+    public static LinkedList<PCComponent> getAll() {
+        return components;
+    }
+
+    public static void addComponent(PCComponent c) {
+        if (c != null) {
+            components.add(c);
+        }
+    }
+
     //Loads dummy data only once
     public static void initDummyDataIfEmpty() {
         if (!components.isEmpty()) {
@@ -55,16 +65,4 @@ public class Inventory {
         components.add(new PCComponent("1000W PSU Platinum", "PSU", "Available", 2, 200.0, "/Image/1000W_PSU_PLATINUM.jpg"));
     }
 
-    // called from Admin controller when admin adds new component
-    public static void addComponent(PCComponent c) {
-        if (c == null) {
-            return;
-        }
-        components.add(c);                  // LinkedList append
-    }
-
-    public static LinkedList<PCComponent> getAll() {
-        return components;                  // shared same list (Admin + User)
-
-    }
 }

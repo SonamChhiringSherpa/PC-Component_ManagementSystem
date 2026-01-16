@@ -7,7 +7,7 @@ package Controller;
 import javax.swing.JOptionPane;
 import Model.LoginModel;
 import Model.UserSession;
-import View.AdminDashboard;
+import View.Admin;
 import View.Login;
 import View.User;
 
@@ -85,7 +85,7 @@ public class LoginController {
         view.showInfo("Login successful.");
 
         if ("ADMIN".equals(acc.getRole())) {
-            AdminDashboard a = new AdminDashboard();
+            Admin a = new Admin();
             a.setVisible(true);
         } else {
             User u = new User();

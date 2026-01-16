@@ -3,17 +3,45 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Model;
+
 import javax.swing.table.AbstractTableModel;
+
 /**
  *
  * @author user
  */
 public class OrderTableModel extends AbstractTableModel {
-     private final String[] cols = {"OrderId", "Date", "Location", "Status", "Total Amount"};
+
+    private final String[] cols = {"OrderId", "Date", "Location", "Status", "Total Amount"};
+
+    // visible row -> real index in global queue
+    private int[] visibleIndex = new int[500];
+    private int visibleCount = 0;
+
+    private void rebuild() {
+        visibleCount = 0;
+
+        int n = OrderArrayQueue.size();
+        for (int i = 0; i < n; i++) {
+            Order o = OrderArrayQueue.getAt(i);
+            if (o == null) {
+                continue;
+            }
+
+            // ADMIN: show only pending orders
+            if ("Pending".equalsIgnoreCase(o.getStatus())) {
+                if (visibleCount < visibleIndex.length) {
+                    visibleIndex[visibleCount] = i;
+                    visibleCount++;
+                }
+            }
+        }
+    }
 
     @Override
     public int getRowCount() {
-        return OrderArrayQueue.size();
+        rebuild();
+        return visibleCount;
     }
 
     @Override
@@ -28,25 +56,55 @@ public class OrderTableModel extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int col) {
-        if (col == 0) return Integer.class;
-        if (col == 4) return Double.class;
+        if (col == 0) {
+            return Integer.class;
+        }
+        if (col == 4) {
+            return Double.class;
+        }
         return String.class;
     }
 
     @Override
     public Object getValueAt(int row, int col) {
-        Order o = OrderArrayQueue.getAt(row);
-        if (o == null) return null;
+        rebuild();
+        if (row < 0 || row >= visibleCount) {
+            return null;
+        }
 
-        if (col == 0) return o.getOrderId();
-        if (col == 1) return o.getDate();
-        if (col == 2) return o.getLocation();
-        if (col == 3) return o.getStatus();
-        if (col == 4) return o.getTotalAmount();
+        Order o = OrderArrayQueue.getAt(visibleIndex[row]);
+        if (o == null) {
+            return null;
+        }
+
+        if (col == 0) {
+            return o.getOrderId();
+        }
+        if (col == 1) {
+            return o.getDate();
+        }
+        if (col == 2) {
+            return o.getLocation();
+        }
+        if (col == 3) {
+            return o.getStatus();
+        }
+        if (col == 4) {
+            return o.getTotalAmount();
+        }
         return null;
     }
 
+    // helper for Approve/Reject button to get the real order
+    public Order getOrderAtRow(int row) {
+        rebuild();
+        if (row < 0 || row >= visibleCount) {
+            return null;
+        }
+        return OrderArrayQueue.getAt(visibleIndex[row]);
+    }
+
     public void refresh() {
-        fireTableDataChanged(); // repaint table when queue changes [web:237]
+        fireTableDataChanged();
     }
 }

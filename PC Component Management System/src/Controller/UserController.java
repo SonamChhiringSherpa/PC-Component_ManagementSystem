@@ -52,13 +52,13 @@ public class UserController {
     public boolean addToCartAndDecreaseStock(PCComponent selected, int qty) {
         CartStack cart = getCart();
         if (cart == null) {
-            return false; // or return; depending on method
+            return false;
         }
         if (selected == null || qty <= 0) {
             return false;
         }
 
-        // check stock
+        // correct stock check
         if (selected.getQuantity() < qty) {
             return false;
         }
@@ -72,11 +72,11 @@ public class UserController {
             cart.push(new CartItem(selected, qty));
         }
 
-        // decrease stock (same object reference shown in product table)
+        // decrease quantity
         selected.setQuantity(selected.getQuantity() - qty);
 
         if (selected.getQuantity() <= 0) {
-            selected.setQuantity(0);                 // safety
+            selected.setQuantity(0);
             selected.setStatus("Out of Stock");
         } else {
             selected.setStatus("Available");
@@ -282,7 +282,7 @@ public class UserController {
 
         int orderId = nextOrderId;
         nextOrderId++;
-        
+
         String username = Model.UserSession.getUsername();
         if (username == null || username.trim().length() == 0) {
             return null;
@@ -298,4 +298,5 @@ public class UserController {
 
         return order;
     }
+
 }

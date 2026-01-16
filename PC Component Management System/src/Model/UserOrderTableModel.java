@@ -80,7 +80,6 @@ public class UserOrderTableModel extends AbstractTableModel {
     }
 
     public void refresh() {
-        rebuild();
         fireTableDataChanged(); // makes JTable refresh [web:237]
     }
 }
